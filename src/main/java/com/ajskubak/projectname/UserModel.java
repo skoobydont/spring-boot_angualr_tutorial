@@ -20,6 +20,11 @@ public class UserModel {
         this.username = username;
         this.dept = dept;
     }
+    public UserModel(int id, String username, String dept){
+        this.userId = id;
+        this.username = username;
+        this.dept = dept;
+    }
 
     public int getId() {
         return userId;
