@@ -2,7 +2,6 @@ package com.ajskubak.projectname;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,17 +13,31 @@ public class UserServiceImpl implements UserService {
     // need to autowire our repository for use
     @Autowired
     private UserRepository repo;
-
-    // get user by id
-    public ResponseEntity<?> getUser(int id) {
-        Optional<UserModel> exists = repo.findById(id);
-        if(exists.isPresent()){
-            return new ResponseEntity<UserModel>(exists.get(),HttpStatus.OK);
-        } else {
-            return new ResponseEntity<String>("User not found",HttpStatus.NOT_FOUND);
+    
+    // add a new user
+    public ResponseEntity<?> addUser(UserModel user){
+        //check if user already exists
+        ArrayList<UserModel> users = new ArrayList<UserModel>();
+        repo.findAll().forEach(users::add);
+        // long auto_id = 1;
+        //check if fields are blank
+        if(user == null || user.getUsername().equals("") || user.getDept().equals("")){
+            return new ResponseEntity<String>("User Fields May Not Be Empty",HttpStatus.NOT_ACCEPTABLE);
         }
+        for(UserModel u: users){
+            if(u.getUsername().equals(user.getUsername()) && u.getId()==user.getId()){
+                return new ResponseEntity<String>("User "+user.getUsername()+" already exists",HttpStatus.CONFLICT);
+            }
+            //auto-increment id based on database
+            if(u.getId() == user.getId()){
+                user.setId(u.getId()+1);
+            }
+        }
+        repo.save(user);
+        System.out.println(user.toString());
+        return new ResponseEntity<String>("User "+user.getUsername()+",Id: "+user.getId()+" added",HttpStatus.CREATED);
     }
- 
+
     // method to get all users from repo
     public ResponseEntity<?> getAllUsers() {
        //check for empty db
@@ -36,30 +49,26 @@ public class UserServiceImpl implements UserService {
            return new ResponseEntity<List<UserModel>>(users, HttpStatus.OK);
        }
     }
+
+    // get user by id
+    public ResponseEntity<?> getUser(long id) {
+        if(repo.existsById(id)){
+            return new ResponseEntity<UserModel>(repo.getOne(id),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("User with Id: "+id+" not found",HttpStatus.NOT_FOUND);
+        }
+    } 
  
     // delete a user based on id
-    public ResponseEntity<?> deleteUser(int id){
+    public ResponseEntity<?> deleteUser(long id){
         //check if user exists
         if(!repo.existsById(id)){
-            return new ResponseEntity<String>("User does not exists",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("User with Id: "+id+" is not found",HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<String>("User deleted", HttpStatus.OK);
         }
     }
 
-    // add a new user
-    public ResponseEntity<?> addUser(UserModel user){
-        //check if user already exists
-        ArrayList<UserModel> users = new ArrayList<UserModel>();
-        repo.findAll().forEach(users::add);
-        for(UserModel u: users){
-            if(u.getName().equals(user.getName())){
-                return new ResponseEntity<String>("User "+user.getName()+" already exists",HttpStatus.CONFLICT);
-            }
-        }
-        repo.save(user);
-        return new ResponseEntity<String>("User "+user.getName()+" added",HttpStatus.CREATED);
-    }
     //delete all users
     public ResponseEntity<?> deleteAllUsers() throws Exception {
         //delete all users
@@ -72,5 +81,16 @@ public class UserServiceImpl implements UserService {
         } else {
             return new ResponseEntity<String>("Users Deleted",HttpStatus.OK);
         }
+    }
+    //update user by id
+    public ResponseEntity<?> updateUserById(UserModel user) throws Exception {
+        if(user.getUsername().isEmpty() || user.getDept().isEmpty()){
+            return new ResponseEntity<String>("Cannot Update With Empty Fields",HttpStatus.NO_CONTENT);
+        }
+        if(!repo.existsById(user.getId())){
+            return new ResponseEntity<String>("User with Id: "+user.getId()+" Not Found",HttpStatus.NOT_FOUND);
+        }
+        repo.save(user);
+        return new ResponseEntity<String>(user.getUsername()+" has been updated",HttpStatus.OK);        
     }
 }

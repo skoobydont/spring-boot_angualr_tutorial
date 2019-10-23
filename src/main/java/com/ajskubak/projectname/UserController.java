@@ -1,7 +1,5 @@
 package com.ajskubak.projectname;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,9 +7,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,7 +18,7 @@ public class UserController {
     private UserServiceImpl service;
     //get user based on id
     @GetMapping(path = {"/user/{id}"})
-    public ResponseEntity<?> getUser(@PathVariable("id") int id) throws Exception {
+    public ResponseEntity<?> getUser(@PathVariable("id") long id) throws Exception {
         return service.getUser(id);
     }
     //get all users
@@ -31,7 +28,7 @@ public class UserController {
     }
     //delete user based on id
     @DeleteMapping(value = "/user/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") int id) throws Exception {
+    public ResponseEntity<?> deleteUser(@PathVariable("id") long id) throws Exception {
         return service.deleteUser(id);
     }
     //delete all users
@@ -43,5 +40,10 @@ public class UserController {
     @PostMapping(value = "/user")
     public ResponseEntity<?> addUser(@RequestBody UserModel user) throws Exception {
         return service.addUser(user);
+    }
+    //update user
+    @PutMapping(value = "/user")
+    public ResponseEntity<?> updateUser(@RequestBody UserModel update) throws Exception {
+        return service.updateUserById(update);
     }
 }
