@@ -1,7 +1,5 @@
 package com.ajskubak.projectname;
 
-import java.util.stream.Stream;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,12 +12,12 @@ public class ProjectnameApplication {
 	}
 	//add some dummy data
 	@Bean
-	CommandLineRunner init(UserRepository userRepo){
+	CommandLineRunner init(UserServiceImpl userService, UserRepository userRepo){
 		return args -> {
-			Stream.of("John","Jane","Jill","Abbie","Ryan").forEach(name -> {
-				UserModel user = new UserModel(name,"IT");
-				userRepo.save(user);
-			});
+			UserModel user2 = new UserModel("Abbie","GD");
+			userService.addUser(user2);
+			UserModel user3 = new UserModel("Jack","OR");
+			userService.addUser(user3);
 			userRepo.findAll().forEach(System.out::println);
 		};
 	}

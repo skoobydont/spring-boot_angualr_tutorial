@@ -19,7 +19,8 @@ public class UserServiceImpl implements UserService {
         //check if user already exists
         ArrayList<UserModel> users = new ArrayList<UserModel>();
         repo.findAll().forEach(users::add);
-        // long auto_id = 1;
+        //auto increment has been difficult so use this to help
+        long auto_id = 0;
         //check if fields are blank
         if(user == null || user.getUsername().equals("") || user.getDept().equals("")){
             return new ResponseEntity<String>("User Fields May Not Be Empty",HttpStatus.NOT_ACCEPTABLE);
@@ -29,13 +30,13 @@ public class UserServiceImpl implements UserService {
                 return new ResponseEntity<String>("User "+user.getUsername()+" already exists",HttpStatus.CONFLICT);
             }
             //auto-increment id based on database
-            if(u.getId() == user.getId()){
+            else if(u.getId() == user.getId() || user.getId() == auto_id ){
                 user.setId(u.getId()+1);
             }
         }
         repo.save(user);
         System.out.println(user.toString());
-        return new ResponseEntity<String>("User "+user.getUsername()+",Id: "+user.getId()+" added",HttpStatus.CREATED);
+        return new ResponseEntity<UserModel>(user,HttpStatus.CREATED);
     }
 
     // method to get all users from repo
