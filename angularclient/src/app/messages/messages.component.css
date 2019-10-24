@@ -1,0 +1,11 @@
+.messages {
+    text-align: center;
+    padding: .5em;
+    margin: .5em 0em .5em 0em;
+    border-radius: .5em;
+    box-shadow: 0em .5em .5em red;
+    background-color: lightgrey;
+}
+h2 {
+    color: red;
+}

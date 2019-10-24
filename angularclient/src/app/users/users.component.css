@@ -1,0 +1,29 @@
+ul.users {
+    background-color: teal;
+    border-radius: .5em;
+    padding: 1.5em;
+    box-shadow: 0em .5em .5em #000000;
+}
+li, a {
+    color: #ffffff;
+    margin: .5em;
+}
+li.selected, li:hover, a:hover {
+    color: aqua;
+    text-decoration: none;
+}
+hr {
+    margin: 0;
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ffffff;
+}
+p {
+    margin: .2em 0em .2em 0em;
+    color: #ffffff;
+    text-align: center;
+}
+h2 {
+    text-align: center;
+}

@@ -1,0 +1,19 @@
+<div *ngIf="user" class="details">
+    <h2>{{ user.username | uppercase }} Details</h2>
+    <div>
+        <span>Id: </span>{{ user.id }}
+    </div>
+    <form [formGroup]="updateForm" (ngSubmit)="updateUser()">
+        <label>
+            UserName:
+            <input type="text" formControlName="username" placeholder="{{user.username}}">
+        </label>
+        <label>
+            Department:
+            <input type="text" formControlName="dept" placeholder="{{user.dept}}">
+        </label>
+        <button type="submit">Update User</button>
+    </form>
+    <button (click)="goBack()">go back</button>
+    <button routerLink="/delete/{{ user.id }}" class="delete">Delete</button>
+</div>

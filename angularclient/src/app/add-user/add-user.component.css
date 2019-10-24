@@ -1,0 +1,30 @@
+.adduser {
+    background-color: darkgoldenrod;
+    border-radius: .5em;
+    padding: 1.5em;
+    box-shadow: 0em .5em .5em lightsteelblue;
+    margin: .5em 0em 1.5em 0em;
+    color: black;
+}
+label, input {
+    margin: 0em 1.5em 0.5em 0em;
+}
+input {
+    max-width: 50%;
+    background-color: inherit;
+    color: black;
+}
+.addbutton {
+    padding: .2em;
+    width: 35%;
+    color: black;
+    background-color: inherit;
+}
+.addbutton:hover {
+    color: lightgreen;
+    background-color: black;
+}
+h2 { text-align: center; }
+.back:hover {
+    color: black;
+}
