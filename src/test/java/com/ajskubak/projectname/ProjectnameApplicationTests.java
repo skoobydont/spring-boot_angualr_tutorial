@@ -3,7 +3,7 @@ package com.ajskubak.projectname;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -166,11 +166,11 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(user2))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//try to update with blank username
-		mock.perform(put("/user")
+		mock.perform(patch("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user4))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
 		//try to update with blank dept
-		mock.perform(put("/user")
+		mock.perform(patch("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user5))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
 	}
@@ -181,7 +181,7 @@ public class ProjectnameApplicationTests {
 		//delete all users
 		mock.perform(delete("/user")).andExpect(status().isOk());
 		//try to update nonexistent user
-		mock.perform(put("/user")
+		mock.perform(patch("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user3))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
 		.andDo(print());
@@ -201,7 +201,7 @@ public class ProjectnameApplicationTests {
 		String url = "/user/"+user1.getId();
 		mock.perform(get(url)).andExpect(status().isOk());
 		//update user
-		mock.perform(put("/user")
+		mock.perform(patch("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user6))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 		.andDo(print());
