@@ -8,6 +8,7 @@ li, a {
     color: #ffffff;
     margin: .5em;
 }
+a { text-decoration: none;}
 li.selected, li:hover, a:hover {
     color: aqua;
     text-decoration: none;

@@ -1,1 +1,12 @@
-<p>delete-user works!</p>
+<div *ngIf="user" class="delete">
+    <h2>User {{ user.id }}</h2>
+    <hr>
+    <p>ID | Username | Department</p>
+    <ul>
+        <li>{{ user.id }} | {{ user.username }} | {{ user.dept }}</li>
+    </ul>
+    <hr>
+    <p>Are You Sure You Want To Delete {{ user.username }}?</p>
+    <button (click)="deleteUser(user.id)" class="deletebutton">DELETE</button><br>
+    <button (click)="goBack()" class="cancelbutton">CANCEL</button>
+</div>

@@ -66,7 +66,9 @@ public class UserServiceImpl implements UserService {
         if(!repo.existsById(id)){
             return new ResponseEntity<String>("User with Id: "+id+" is not found",HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<String>("User deleted", HttpStatus.OK);
+            //delete user
+            repo.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
@@ -92,6 +94,6 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<String>("User with Id: "+user.getId()+" Not Found",HttpStatus.NOT_FOUND);
         }
         repo.save(user);
-        return new ResponseEntity<String>(user.getUsername()+" has been updated",HttpStatus.OK);        
+        return new ResponseEntity<UserModel>(user,HttpStatus.OK);        
     }
 }

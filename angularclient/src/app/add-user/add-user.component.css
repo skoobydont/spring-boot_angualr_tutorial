@@ -14,11 +14,12 @@ input {
     background-color: inherit;
     color: black;
 }
-.addbutton {
+.addbutton, .back {
     padding: .2em;
     width: 35%;
     color: black;
     background-color: inherit;
+    margin-top: .5em;
 }
 .addbutton:hover {
     color: lightgreen;
@@ -26,5 +27,6 @@ input {
 }
 h2 { text-align: center; }
 .back:hover {
-    color: black;
+    background-color: black;
+    color:white;
 }

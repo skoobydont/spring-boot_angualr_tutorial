@@ -1,0 +1,10 @@
+.delete {
+    color: white;
+    background-color: black;
+    border-radius: .5em;
+    box-shadow: 0em .5em .5em red;
+    padding: 1em;
+}
+button:hover { background-color: transparent;}
+.deletebutton:hover { color: red;}
+.cancelbutton:hover {color: green;}

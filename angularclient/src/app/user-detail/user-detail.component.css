@@ -16,8 +16,12 @@
 h2 {
     text-align: center;
 }
+button {
+    margin: .2em 0em 0em 0em;
+}
 button:hover {
     color: lightgreen;
+    background-color: transparent;
 }
 .delete:hover {
     color: red;
