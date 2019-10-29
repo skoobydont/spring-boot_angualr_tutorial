@@ -1,10 +1,18 @@
 <div *ngIf="user" class="delete">
-    <h2>User {{ user.id }}</h2>
+    <h2>DELETE USER {{user.id}}</h2>
     <hr>
-    <p>ID | Username | Department</p>
-    <ul>
-        <li>{{ user.id }} | {{ user.username }} | {{ user.dept }}</li>
-    </ul>
+    <table>
+        <thead>
+            <td>ID</td>
+            <td>Username</td>
+            <td>Department</td>
+        </thead>
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.dept }}</td>
+        </tr>
+    </table>
     <hr>
     <p>Are You Sure You Want To Delete {{ user.username }}?</p>
     <button (click)="deleteUser(user.id)" class="deletebutton">DELETE</button><br>

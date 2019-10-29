@@ -1,5 +1,9 @@
 package com.ajskubak.projectname;
 
+import com.ajskubak.projectname.model.UserModel;
+import com.ajskubak.projectname.repository.UserRepository;
+import com.ajskubak.projectname.service.UserServiceImpl;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

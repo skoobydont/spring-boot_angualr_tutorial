@@ -1,4 +1,6 @@
-package com.ajskubak.projectname;
+package com.ajskubak.projectname.repository;
+
+import com.ajskubak.projectname.model.UserModel;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

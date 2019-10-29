@@ -8,3 +8,15 @@
 button:hover { background-color: transparent;}
 .deletebutton:hover { color: red;}
 .cancelbutton:hover {color: green;}
+h2, p { text-align: center;}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table, th, td {
+    border: 1px solid white;
+}
+td {
+    text-align: center;
+    padding: .5em;
+}

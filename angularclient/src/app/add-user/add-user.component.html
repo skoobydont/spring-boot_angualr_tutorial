@@ -1,19 +1,20 @@
 <div class="adduser">
     <form [formGroup]="addUserForm" (ngSubmit)="addUser()">
         <h2>Add User</h2>
-        <input type="hidden" formControlName="id" value="1">
-        <label>
-            Username: 
-            <input type="text" formControlName="username" placeholder="username">
-        </label>
-        <label>
-            Department:
-            <input type="text" formControlName="dept" placeholder="department">
-        </label>
-        <label>
-            Password: 
-            <input type="password" formControlName="password" placeholder="password">
-        </label>
+        <table>
+            <tr>
+                <td><input type="hidden" formControlName="id" value="1"></td>
+            </tr>
+            <tr>
+                <td><label>Username:</label></td><td><input type="text" formControlName="username" placeholder="username"></td>
+            </tr>
+            <tr>
+                <td><label>Department:</label></td><td><input type="text" formControlName="dept" placeholder="department"></td>
+            </tr>
+            <tr>
+                <td><label>Password:</label></td><td><input type="password" formControlName="password" placeholder="password"></td>
+            </tr>            
+        </table>
         <button type="submit" class="addbutton">Add User</button>
     </form>
     <button (click)="goBack()" class="back">Go Back</button>

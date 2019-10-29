@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.transaction.Transactional;
 
+import com.ajskubak.projectname.model.UserModel;
+import com.ajskubak.projectname.service.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Before;

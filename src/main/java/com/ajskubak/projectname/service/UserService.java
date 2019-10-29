@@ -1,4 +1,4 @@
-package com.ajskubak.projectname;
+package com.ajskubak.projectname.service;
 
 import org.springframework.stereotype.Service;
 
