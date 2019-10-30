@@ -208,12 +208,4 @@ public class ProjectnameApplicationTests {
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 		.andDo(print());
 	}
-
-	public static String asJsonString(final Object obj){
-		try {
-			return new ObjectMapper().writeValueAsString(obj);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
 }

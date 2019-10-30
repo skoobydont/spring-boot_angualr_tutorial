@@ -3,6 +3,7 @@ package com.ajskubak.projectname.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.ajskubak.projectname.model.Skill;
 import com.ajskubak.projectname.model.UserModel;
@@ -23,7 +24,8 @@ public class UserServiceImpl implements UserService {
     private SkillRepository skillRepo;
 
     /*
-     * =============================== BEGIN USER SERVICE METHODS
+     * =============================== 
+     * BEGIN USER SERVICE METHODS
      * ===============================
      */
     // add a new user
@@ -122,10 +124,6 @@ public class UserServiceImpl implements UserService {
      */
     // add skill
     public ResponseEntity<?> addSkilltoUser(Skill skill, long user_id) {
-        // System.out.println("\n\n Skill:"+skill);
-        // System.out.println("\n\n user_id:"+user_id);
-        // System.out.println("\n\n user repo:"+userRepo.getOne(user_id));
-        // System.out.println("\n\n skill repo:"+skillRepo.save(skill).getSkill());
         // check if skill exists
         if (skillRepo.existsById(skill.getId())) {
             // skill exists; is it already with user?
@@ -133,31 +131,18 @@ public class UserServiceImpl implements UserService {
                 return new ResponseEntity<String>("Skill Already Exists with User", HttpStatus.CONFLICT);
             } else { // skill exists and not with user yet, add and return 201
                 UserModel save = userRepo.getOne(user_id);
-                save.addSkill(skill);
+                save.getSkills().add(skill);
                 userRepo.save(save);
-                return new ResponseEntity<String>(skill.getSkill() + " added", HttpStatus.CREATED);
+                return new ResponseEntity<UserModel>(save, HttpStatus.CREATED);
             }
         } else { // skill does not exist yet
-            // ArrayList<Skill> allSkills = new ArrayList<Skill>();
-            // long auto_id = 0;
-            // //auto increment id then save
-            // skillRepo.findAll().forEach(allSkills::add);
-            // for(Skill s: allSkills){
-            // if(s.getId() == skill.getId() || skill.getId() == auto_id){
-            // skill.setId(s.getId()+1);
-            // }
-            // }
             // save new skill and add user to skill's user list
-            System.out.println("\n\n\n\n" + skill.getUsers() + "\n\n\n\n\n\n");
-            //TODO : instantiate array list of users for skills and somehow add a new user to skill user list
-            // add new skill to user's skill list
             Optional<UserModel> user = userRepo.findById(user_id);
-            Skill add = new Skill(skill.getSkill());
-            skill.addUser(user.get());
-            user.get().addSkill(skill);
-            skillRepo.save(add);
-            userRepo.save(user.get());            
-            return new ResponseEntity<String>(skill.getSkill()+" was added",HttpStatus.CREATED);
+            UserModel save = user.get();
+            save.getSkills().add(skill);
+            //skill.getUsers().add(save);
+            userRepo.save(save);
+            return new ResponseEntity<UserModel>(save,HttpStatus.CREATED);
         }
     }
     //get list of every skill
@@ -176,8 +161,8 @@ public class UserServiceImpl implements UserService {
         if(userRepo.getOne(user_id).getSkills().isEmpty()){
             return new ResponseEntity<String>("User has no associated skills",HttpStatus.NOT_FOUND);
         } //return list of skills based on user id
-        return new ResponseEntity<List<Skill>>(userRepo.getOne(user_id).getSkills(),HttpStatus.OK); 
-        
+        userRepo.save(userRepo.getOne(user_id));
+        return new ResponseEntity<Set<Skill>>(userRepo.getOne(user_id).getSkills(),HttpStatus.OK); 
     }
     //delete skill by user id
     public ResponseEntity<?> deleteSkillByUserId(long skill_id, long user_id){
@@ -185,11 +170,12 @@ public class UserServiceImpl implements UserService {
         if(!userRepo.getOne(user_id).getSkills().contains(skillRepo.getOne(skill_id))){
             return new ResponseEntity<String>("Skill with id:"+skill_id+" unassociated with user:"+user_id,HttpStatus.NOT_FOUND);
         } else {// if the user has the skill, remove it from list
-            userRepo.getOne(user_id).removeSkill(skillRepo.getOne(skill_id));
+            userRepo.getOne(user_id).getSkills().remove(skillRepo.getOne(skill_id));
             //if the skill belongs to no one else, delete skill alltogether
             if(skillRepo.getOne(skill_id).getUsers().isEmpty()){
                 skillRepo.delete(skillRepo.getOne(skill_id));
             } //return 200
+            userRepo.save(userRepo.getOne(user_id));
             return new ResponseEntity<String>("Skill removed",HttpStatus.OK);
         }
     }
@@ -206,7 +192,9 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<String>("Skills Deleted",HttpStatus.OK);
         }
     }
-    /* ===============================
-    END SKILL SERVICE METHODS
-    =============================== */
+    /* 
+    * ===============================
+    * END SKILL SERVICE METHODS
+    * =============================== 
+    */
 }

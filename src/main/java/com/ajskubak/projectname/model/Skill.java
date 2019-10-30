@@ -1,12 +1,15 @@
 package com.ajskubak.projectname.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class Skill {
@@ -14,14 +17,15 @@ public class Skill {
     @GeneratedValue
     private long id;
     private String skill;
+    //need to add jsonignore or else infinite loop when query skills or users
+    @JsonIgnore
     @ManyToMany(mappedBy = "skills")
-    private List<UserModel> users;
+    private Set<UserModel> users = new HashSet<UserModel>();
 
     public Skill(){}
     public Skill(String skill){
         // this.id = 1;
         this.skill = skill;
-        this.users = new ArrayList<UserModel>();
     }
     public String getSkill(){
         return this.skill;
@@ -35,13 +39,10 @@ public class Skill {
     public void setId(long id){
         this.id = id;
     }
-    public List<UserModel> getUsers(){
+    public Set<UserModel> getUsers(){
         return this.users;
     }
-    public Boolean addUser(UserModel user){
-        return this.users.add(user);
-    }
-    public Boolean removeUser(UserModel remove){
-        return this.users.remove(remove);
+    public void setUsers(Set<UserModel> users){
+        this.users = users;
     }
 }
