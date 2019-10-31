@@ -26,3 +26,20 @@ button:hover {
 .delete:hover {
     color: red;
 }
+table {
+    margin:auto;
+    text-align: center;
+    border-collapse: collapse;
+    border: 1px solid white;
+}
+th, td {
+    border-bottom: 1px solid white;
+    padding: .5em;
+}
+a {
+    text-decoration: none;
+    color: white;
+}
+tr:hover {
+    background-color: grey;
+}

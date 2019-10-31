@@ -5,14 +5,16 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
+import { SkillDetailComponent } from './skill-detail/skill-detail.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: '/users', pathMatch: 'full' },
   { path: 'users', component: UsersComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'detail/:id', component: UserDetailComponent },
   { path: 'add', component: AddUserComponent },
-  { path: 'delete/:id', component: DeleteUserComponent }
+  { path: 'delete/:id', component: DeleteUserComponent },
+  { path: 'detail/:id/skill/:id', component: SkillDetailComponent }
 ];
 
 @NgModule({

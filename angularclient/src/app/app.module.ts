@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AddUserComponent } from './add-user/add-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
+import { SkillDetailComponent } from './skill-detail/skill-detail.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { DeleteUserComponent } from './delete-user/delete-user.component';
     MessagesComponent,
     DashboardComponent,
     AddUserComponent,
-    DeleteUserComponent
+    DeleteUserComponent,
+    SkillDetailComponent
   ],
   imports: [
     BrowserModule,

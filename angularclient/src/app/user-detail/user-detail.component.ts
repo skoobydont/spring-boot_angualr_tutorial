@@ -6,6 +6,7 @@ import { UserService } from '../user.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from '../message.service';
+import { Skill } from '../skill';
 
 @Component({
   selector: 'app-user-detail',
@@ -14,6 +15,7 @@ import { MessageService } from '../message.service';
 })
 export class UserDetailComponent implements OnInit {
   @Input() user: User;
+  @Input() allSkills: Skill[];
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
@@ -28,6 +30,7 @@ export class UserDetailComponent implements OnInit {
 
   ngOnInit() {
     this.getUser();
+    this.getUserSkills();
   }
   getUser(): void {
     const id = +this.route.snapshot.paramMap.get('id');
@@ -47,5 +50,9 @@ export class UserDetailComponent implements OnInit {
     this.messageService.add(update.username+' updated');
     this.userService.updateUser(update).subscribe();
     this.router.navigate(['/users']);
+  }
+  getUserSkills(): void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.userService.getUserSkills(id).subscribe(skill => this.allSkills = skill);
   }
 }

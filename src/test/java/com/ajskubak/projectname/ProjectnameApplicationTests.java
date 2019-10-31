@@ -1,5 +1,6 @@
 package com.ajskubak.projectname;
 
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -7,8 +8,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+
+import java.util.ArrayList;
+
 import javax.transaction.Transactional;
 
+import com.ajskubak.projectname.model.Skill;
 import com.ajskubak.projectname.model.UserModel;
 import com.ajskubak.projectname.service.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +43,8 @@ public class ProjectnameApplicationTests {
 	UserModel user4 = new UserModel("","dept");
 	UserModel user5 = new UserModel("US4R","");
 	UserModel user6 = new UserModel(1,"6S3R","D36T");
+	Skill skill1 = new Skill("sk1ll");
+	Skill skill2 = new Skill("sk2ll");
 
 	//this objmapper will help us write objects as json strings for testing
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -208,4 +217,97 @@ public class ProjectnameApplicationTests {
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 		.andDo(print());
 	}
+
+	//test if we can add a skill to user
+	@Transactional
+	@Test
+	public void addSkillstoUserSuccessTest() throws Exception {
+		//add new user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//now add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//second skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//check if user has skill in skills attribute
+		mock.perform(get("/user/"+user1.getId()+"/skills")).andExpect(status().isOk());
+		//add skills to array list and assure the array is not null
+		ArrayList<Skill> userSkills = new ArrayList<Skill>();
+		user1.getSkills().forEach(userSkills::add);
+		assertNotNull(userSkills);
+	}
+	//test if we add empty skill to user
+	@Transactional
+	@Test
+	public void addEmptySkilltoUserTest() throws Exception {
+		//add a user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//now add blank skill to user
+		Skill blank = new Skill("");
+		//should send back not acceptable
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(blank))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable());
+	}
+	//test if we add duplicate skill to user
+	@Transactional
+	@Test
+	public void addDuplicateSkilltoUserTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//try to add exact skill again
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
+	}
+	//test if we can add and then receive a list of skills (regardless of user association)
+	@Transactional
+	@Test
+	public void retrieveAllSkillsRegardlessOfUserTest() throws Exception {
+		//add user 1
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add user 2
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill 1 to user 1
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill 2 to user 1
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill 2 to user 2
+		mock.perform(post("/user/2")
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//try to retrieve all skills
+		mock.perform(get("/skills")).andExpect(status().isOk());
+	}
+	//test if retrieving skills before any are added results in 404
+	@Transactional
+	@Test
+	public void retrieveAllSkillsBeforeAddingAnyTest() throws Exception {
+		//delete all skills first
+		mock.perform(delete("/skills")).andExpect(status().isOk());
+		//check if no skills are found
+		mock.perform(get("/skills")).andExpect(status().isNotFound());
+	}
+	
 }

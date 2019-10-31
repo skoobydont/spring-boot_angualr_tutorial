@@ -24,7 +24,7 @@ public class Skill {
 
     public Skill(){}
     public Skill(String skill){
-        // this.id = 1;
+        // this.id = 0;
         this.skill = skill;
     }
     public String getSkill(){

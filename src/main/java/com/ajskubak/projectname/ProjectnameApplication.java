@@ -1,5 +1,6 @@
 package com.ajskubak.projectname;
 
+import com.ajskubak.projectname.model.Skill;
 import com.ajskubak.projectname.model.UserModel;
 import com.ajskubak.projectname.repository.UserRepository;
 import com.ajskubak.projectname.service.UserServiceImpl;
@@ -23,6 +24,13 @@ public class ProjectnameApplication {
 			UserModel user3 = new UserModel("Jack","OR");
 			userService.addUser(user3);
 			userRepo.findAll().forEach(System.out::println);
+			Skill skill1 = new Skill("sk1ll");
+			Skill skill2 = new Skill("sk2ll");
+			user2.getSkills().add(skill1);
+			user2.getSkills().add(skill2);
+			user3.getSkills().add(skill2);
+			userRepo.save(user2);
+			userRepo.save(user3);
 		};
 	}
 }

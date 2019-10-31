@@ -5,7 +5,6 @@ import com.ajskubak.projectname.model.UserModel;
 import com.ajskubak.projectname.service.UserServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,8 +64,8 @@ public class UserController {
     public ResponseEntity<?> getAllSkills() throws Exception {
         return userService.getAllSkills();
     }
-    //get skill by user id
-    @GetMapping(path = "/user/{id}/skill")
+    //get skills by user id
+    @GetMapping(path = "/user/{id}/skills")
     public ResponseEntity<?> getSkillsByUserId(@PathVariable("id") long id) throws Exception {
         return userService.getSkillsByUserId(id);
     }
@@ -79,6 +78,11 @@ public class UserController {
     @DeleteMapping(value = "/user/{id}/skill")
     public ResponseEntity<?> deleteSkillByUserId(@PathVariable("id") long user_id, @RequestBody long skill_id) throws Exception{
         return userService.deleteSkillByUserId(skill_id,user_id);
+    }
+    //delete all skills
+    @DeleteMapping(value = "/skills")
+    public ResponseEntity<?> deleteAllSkills() throws Exception {
+        return userService.deleteAllSkills();
     }
     /* ===============================
     END SKILL ENDPOINTS

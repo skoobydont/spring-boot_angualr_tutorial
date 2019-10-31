@@ -124,26 +124,26 @@ public class UserServiceImpl implements UserService {
      */
     // add skill
     public ResponseEntity<?> addSkilltoUser(Skill skill, long user_id) {
-        // check if skill exists
-        if (skillRepo.existsById(skill.getId())) {
-            // skill exists; is it already with user?
-            if (userRepo.getOne(user_id).getSkills().contains(skill)) {// skill already exists with specified user
-                return new ResponseEntity<String>("Skill Already Exists with User", HttpStatus.CONFLICT);
-            } else { // skill exists and not with user yet, add and return 201
-                UserModel save = userRepo.getOne(user_id);
-                save.getSkills().add(skill);
-                userRepo.save(save);
-                return new ResponseEntity<UserModel>(save, HttpStatus.CREATED);
+        //check if any fields are empty
+        if(skill == null || skill.getSkill().equals("")){
+            return new ResponseEntity<String>("Skill may not be null or have empty fields",HttpStatus.NOT_ACCEPTABLE);
+        }// grab user from userRepo
+        Optional<UserModel> user = userRepo.findById(user_id);
+        //instantiate arraylist of skills and populate with skills from user
+        ArrayList<Skill> allSkills = new ArrayList<Skill>();
+        user.get().getSkills().forEach(allSkills::add);
+        // check if given skill already exists in list of user skills
+        for(Skill s: allSkills){//if given skill is the same as a skill in user list, refuse duplicate skill entry
+            if(skill.getSkill().equals(s.getSkill())){
+                return new ResponseEntity<String>("Skill already exists with user: "+user.get().getUsername(),HttpStatus.CONFLICT);
             }
-        } else { // skill does not exist yet
-            // save new skill and add user to skill's user list
-            Optional<UserModel> user = userRepo.findById(user_id);
-            UserModel save = user.get();
-            save.getSkills().add(skill);
-            //skill.getUsers().add(save);
-            userRepo.save(save);
-            return new ResponseEntity<UserModel>(save,HttpStatus.CREATED);
-        }
+        }//if skill not found within user skill list, add to user list and save user
+        UserModel save = user.get();
+        save.getSkills().add(skill);
+        //skill.getUsers().add(save);
+        userRepo.save(save);
+        return new ResponseEntity<UserModel>(save,HttpStatus.CREATED);
+        
     }
     //get list of every skill
     public ResponseEntity<?> getAllSkills(){
