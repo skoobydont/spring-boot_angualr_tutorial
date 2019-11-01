@@ -309,5 +309,100 @@ public class ProjectnameApplicationTests {
 		//check if no skills are found
 		mock.perform(get("/skills")).andExpect(status().isNotFound());
 	}
-	
+	//test if we can get skill based on user
+	@Transactional
+	@Test
+	public void getSkillByUserSuccessTest() throws Exception {
+		//add user 1
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add user 2
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill 1 to user 1
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill 2 to user 1
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill 2 to user 2
+		mock.perform(post("/user/2")
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//grab skills from user1
+		mock.perform(get("/user/"+user1.getId())).andExpect(status().isOk());
+		//grab skill from user2
+		mock.perform(get("/user/"+user2.getId())).andExpect(status().isOk());
+	}
+	//test if we get error when getting skill from user without skills
+	@Transactional
+	@Test
+	public void getSkillByUserFailureTest() throws Exception {
+		mock.perform(delete("/user")).andExpect(status().isOk());
+		mock.perform(delete("/skills")).andExpect(status().isOk());
+		//add user 1
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//test if user1 has skills
+		mock.perform(get("/user/"+user1.getId()+"/skills")).andExpect(status().isNotFound());
+	}
+	//test if we can delete skill from user
+	@Transactional
+	@Test
+	public void deleteSkillByUserIdSuccessTest() throws Exception {
+		mock.perform(delete("/user")).andExpect(status().isOk());
+		mock.perform(delete("/skills")).andExpect(status().isOk());
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill to user1
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//validate if user has skills
+		mock.perform(get("/user/"+user1.getId()+"/skills")).andExpect(status().isOk());
+		//delete skill from user1
+		//tried using skill1.getId() but with auto generated annotation, the id of skill1 is 7
+		mock.perform(delete("/user/"+user1.getId()+"/skill/7")).andExpect(status().isOk());
+		//validate user1 has no skills; noob
+		mock.perform(get("/user/"+user1.getId()+"/skills")).andExpect(status().isNotFound());
+		//test fails when run in isolation but with mvn verify, it passes
+	}
+	//test if 404 responded when we try to delete nonexistent skill from user
+	@Transactional
+	@Test
+	public void deleteNonexistentSkillFromUserTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//try to delete some skill
+		mock.perform(delete("/user/"+user1.getId()+"/skill/5")).andExpect(status().isNotFound());
+	}
+	//test if we get conflict when trying to delete skill unassociated with user
+	@Transactional
+	@Test
+	public void deleteSkillUnassociatedWithUser() throws Exception {
+		//add user 1
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add user 2
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill 2 to user 2
+		mock.perform(post("/user/2")
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//test if conflict when trying to delete skill 1 from user 1
+		mock.perform(delete("/user/1/skill/12")).andExpect(status().isConflict());
+		//auto generated id for this skill is 12
+	}
 }

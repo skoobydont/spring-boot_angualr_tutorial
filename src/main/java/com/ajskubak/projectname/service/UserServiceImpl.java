@@ -158,24 +158,41 @@ public class UserServiceImpl implements UserService {
     //get skills for specific user based on id
     public ResponseEntity<?> getSkillsByUserId(long user_id){
         //check if skill exists in user skill list
-        if(userRepo.getOne(user_id).getSkills().isEmpty()){
+        Optional<UserModel> user = userRepo.findById(user_id);
+        //create arraylist of skills to check if skills are in it
+        ArrayList<Skill> userSkills = new ArrayList<Skill>();
+        //loop through user skill list and add to userskills
+        user.get().getSkills().forEach(userSkills::add);
+        //if the userskills list is smaller than 1 skill, throw 404
+        if(userSkills.size()<1){
             return new ResponseEntity<String>("User has no associated skills",HttpStatus.NOT_FOUND);
-        } //return list of skills based on user id
-        userRepo.save(userRepo.getOne(user_id));
-        return new ResponseEntity<Set<Skill>>(userRepo.getOne(user_id).getSkills(),HttpStatus.OK); 
+        } else { //return list of skills based on user id
+            return new ResponseEntity<Set<Skill>>(userRepo.getOne(user_id).getSkills(),HttpStatus.OK); 
+        } 
     }
     //delete skill by user id
     public ResponseEntity<?> deleteSkillByUserId(long skill_id, long user_id){
         //if the user skill list does not contain skill, 404
-        if(!userRepo.getOne(user_id).getSkills().contains(skillRepo.getOne(skill_id))){
-            return new ResponseEntity<String>("Skill with id:"+skill_id+" unassociated with user:"+user_id,HttpStatus.NOT_FOUND);
+        //get user
+        Optional<UserModel> user = userRepo.findById(user_id);
+        ArrayList<Skill> allSkills = new ArrayList<Skill>();
+        //check if skill is in user skill list
+        user.get().getSkills().forEach(allSkills::add);
+        //get skill in question
+        Optional<Skill> deleteThis = skillRepo.findById(skill_id);
+        //check if skill exists
+        if(!deleteThis.isPresent()){
+            return new ResponseEntity<String>("Skill Does Not Exist",HttpStatus.NOT_FOUND);
+        }
+        if(!allSkills.contains(deleteThis.get())){
+            return new ResponseEntity<String>("Skill with id:"+skill_id+" unassociated with user:"+user_id,HttpStatus.CONFLICT);
         } else {// if the user has the skill, remove it from list
             userRepo.getOne(user_id).getSkills().remove(skillRepo.getOne(skill_id));
             //if the skill belongs to no one else, delete skill alltogether
             if(skillRepo.getOne(skill_id).getUsers().isEmpty()){
                 skillRepo.delete(skillRepo.getOne(skill_id));
             } //return 200
-            userRepo.save(userRepo.getOne(user_id));
+            userRepo.save(user.get());
             return new ResponseEntity<String>("Skill removed",HttpStatus.OK);
         }
     }

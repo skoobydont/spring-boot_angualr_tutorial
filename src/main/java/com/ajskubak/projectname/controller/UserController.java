@@ -75,8 +75,8 @@ public class UserController {
         return userService.addSkilltoUser(skill, user_id);
     }
     //delete skill by user id
-    @DeleteMapping(value = "/user/{id}/skill")
-    public ResponseEntity<?> deleteSkillByUserId(@PathVariable("id") long user_id, @RequestBody long skill_id) throws Exception{
+    @DeleteMapping(value = "/user/{id}/skill/{skill_id}")
+    public ResponseEntity<?> deleteSkillByUserId(@PathVariable("id") long user_id, @PathVariable("skill_id") long skill_id) throws Exception{
         return userService.deleteSkillByUserId(skill_id,user_id);
     }
     //delete all skills
