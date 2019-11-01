@@ -1,0 +1,24 @@
+.skilldetails {
+    background-color: indigo;
+    color: white;
+    padding: 1.5em;
+    box-shadow: 0em .5em .5em greenyellow;
+    border-radius: .5em;;
+}
+table {
+    border-collapse: collapse;
+    border: 1px solid white;
+}
+td {
+    padding: 1em;
+    border-bottom: 1px solid white;
+    border-right: 1px dashed white;
+}
+button {
+    margin-top: .5em;
+    color: indigo;
+}
+button.back:hover {
+    background-color: indigo;
+    color: yellowgreen;
+}

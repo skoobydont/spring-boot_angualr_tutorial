@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'detail/:id', component: UserDetailComponent },
   { path: 'add', component: AddUserComponent },
   { path: 'delete/:id', component: DeleteUserComponent },
-  { path: 'detail/:id/skill/:id', component: SkillDetailComponent }
+  { path: 'detail/:user_id/skill/:skill_id', component: SkillDetailComponent }
 ];
 
 @NgModule({

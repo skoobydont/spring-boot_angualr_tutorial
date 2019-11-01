@@ -41,7 +41,10 @@ export class UserService {
   }
   getUserSkills(id: number): Observable<Skill[]>{
     this.messageService.add('Get the skills for user: '+id);
-    this.messageService.add(this.userUrl+'/'+id+'/skills');
     return this.http.get<Skill[]>(this.userUrl+'/'+id+'/skills');
+  }
+  getSkill(user_id: number, skill_id: number): Observable<Skill> {
+    this.messageService.add('fetch skill: '+skill_id+' from user'+user_id);
+    return this.http.get<Skill>(this.userUrl+'/'+user_id+'/skill/'+skill_id);
   }
 }

@@ -75,14 +75,19 @@ public class UserController {
         return userService.addSkilltoUser(skill, user_id);
     }
     //delete skill by user id
-    @DeleteMapping(value = "/user/{id}/skill/{skill_id}")
-    public ResponseEntity<?> deleteSkillByUserId(@PathVariable("id") long user_id, @PathVariable("skill_id") long skill_id) throws Exception{
+    @DeleteMapping(value = "/user/{user_id}/skill/{skill_id}")
+    public ResponseEntity<?> deleteSkillByUserId(@PathVariable("user_id") long user_id, @PathVariable("skill_id") long skill_id) throws Exception{
         return userService.deleteSkillByUserId(skill_id,user_id);
     }
     //delete all skills
     @DeleteMapping(value = "/skills")
     public ResponseEntity<?> deleteAllSkills() throws Exception {
         return userService.deleteAllSkills();
+    }
+    //get one skill from user
+    @GetMapping(value = "/user/{user_id}/skill/{skill_id}")
+    public ResponseEntity<?> getSkillFromUser(@PathVariable("user_id") long user_id, @PathVariable("skill_id") long skill_id){
+        return userService.getOneSkillFromUser(user_id, skill_id);
     }
     /* ===============================
     END SKILL ENDPOINTS

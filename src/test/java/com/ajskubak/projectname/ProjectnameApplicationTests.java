@@ -8,9 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
 import java.util.ArrayList;
 
 import javax.transaction.Transactional;
@@ -36,7 +33,10 @@ import org.springframework.test.web.servlet.MockMvc;
 public class ProjectnameApplicationTests {
 	@Autowired
 	UserServiceImpl userService;
-
+	/* auto generated id values for skills are a pain;
+	*  some tests use hard url values to access correct skills
+	*  as more skill tests are added, be prepared to update other tests ):
+	*/
 	UserModel user1 = new UserModel("USER1","DEPT1");
 	UserModel user2 = new UserModel("USER2","DEPT2");
 	UserModel user3 = new UserModel("US3R","D3PT");
@@ -63,8 +63,7 @@ public class ProjectnameApplicationTests {
 		this.mock.perform(post("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user3))
 		.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isCreated())
-		.andDo(print());
+		.andExpect(status().isCreated());
 	}
 	//test if duplicate addition returns 409 http status
 	@Transactional
@@ -78,8 +77,7 @@ public class ProjectnameApplicationTests {
 		this.mock.perform(post("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user1))
 		.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isConflict())
-		.andDo(print());
+		.andExpect(status().isConflict());
 	}
 	//test if get all users
 	@Transactional
@@ -97,8 +95,7 @@ public class ProjectnameApplicationTests {
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//get all users
 		mock.perform(get("/user").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andDo(print());
+		.andExpect(status().isOk());
 	}
 	//test if no users available - 204
 	@Transactional
@@ -126,8 +123,7 @@ public class ProjectnameApplicationTests {
 		//check allusers
 		mock.perform(get("/user")).andExpect(status().isOk());
 		//now check user by id
-		mock.perform(get("/user/"+user1.getId())).andExpect(status().isOk())
-		.andDo(print());
+		mock.perform(get("/user/"+user1.getId())).andExpect(status().isOk());
 	}
 
 	//test if get user by id and not found - 404
@@ -146,7 +142,7 @@ public class ProjectnameApplicationTests {
 	public void deleteUserByIdSucessTest() throws Exception {
 		mock.perform(post("/user").content(OBJECT_MAPPER.writeValueAsString(user1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
-		mock.perform(delete("/user/"+user1.getId())).andExpect(status().isOk()).andDo(print());
+		mock.perform(delete("/user/"+user1.getId())).andExpect(status().isOk());
 	}
 
 	//test if delete user by id failure - not found 404
@@ -194,8 +190,7 @@ public class ProjectnameApplicationTests {
 		//try to update nonexistent user
 		mock.perform(patch("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user3))
-		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
-		.andDo(print());
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
 	}
 
 	//test if update user is successful
@@ -214,8 +209,7 @@ public class ProjectnameApplicationTests {
 		//update user
 		mock.perform(patch("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user6))
-		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-		.andDo(print());
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	//test if we can add a skill to user
@@ -368,8 +362,8 @@ public class ProjectnameApplicationTests {
 		//validate if user has skills
 		mock.perform(get("/user/"+user1.getId()+"/skills")).andExpect(status().isOk());
 		//delete skill from user1
-		//tried using skill1.getId() but with auto generated annotation, the id of skill1 is 7
-		mock.perform(delete("/user/"+user1.getId()+"/skill/7")).andExpect(status().isOk());
+		//tried using skill1.getId() but with auto generated annotation, the id of skill1 is 8
+		mock.perform(delete("/user/"+user1.getId()+"/skill/8")).andExpect(status().isOk());
 		//validate user1 has no skills; noob
 		mock.perform(get("/user/"+user1.getId()+"/skills")).andExpect(status().isNotFound());
 		//test fails when run in isolation but with mvn verify, it passes
@@ -402,7 +396,41 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//test if conflict when trying to delete skill 1 from user 1
-		mock.perform(delete("/user/1/skill/12")).andExpect(status().isConflict());
-		//auto generated id for this skill is 12
+		mock.perform(delete("/user/1/skill/14")).andExpect(status().isConflict());
+		//auto generated id for this skill is 14
+	}
+	//test if we can get one skill from user
+	@Transactional
+	@Test
+	public void getOneSkillFromUserSuccessTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//test if get one skill returns 200
+		mock.perform(get("/user/"+user1.getId()+"/skill/9")).andExpect(status().isOk());
+	}
+	//test if we get 404 from get one skill of user
+	@Transactional
+	@Test
+	public void getOneSkillFromUserFailureTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add user2
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill to different user
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//try to access skill from user 2
+		mock.perform(get("/user/2/skill/7")).andExpect(status().isNotFound());
 	}
 }

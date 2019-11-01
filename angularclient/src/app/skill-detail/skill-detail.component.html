@@ -1,1 +1,13 @@
-<p>skill-detail works!</p>
+<div *ngIf="skill" class="skilldetails">
+    <h2>{{skill.skill}}</h2>
+    <table>
+        <tr>
+            <td>Id</td><td>Desciption</td>
+        </tr>
+        <tr>
+            <td>{{skill.id}}</td>
+            <td>{{skill.skill}}</td>
+        </tr>
+    </table>
+    <button (click)="goBack()" class="back">Go Back</button>
+</div>

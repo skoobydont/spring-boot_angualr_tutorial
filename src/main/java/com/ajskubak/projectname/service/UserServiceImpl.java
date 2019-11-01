@@ -209,6 +209,25 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<String>("Skills Deleted",HttpStatus.OK);
         }
     }
+    //get one skill from user
+    public ResponseEntity<?> getOneSkillFromUser(long user_id, long skill_id) {
+        //grab user
+        Optional<UserModel> user = userRepo.findById(user_id);
+        ArrayList<Skill> allSkills = new ArrayList<Skill>();
+        //return the one that matches the input skill id
+        Optional<Skill> oneSkill = skillRepo.findById(skill_id);
+        if(!oneSkill.isPresent()){
+            return new ResponseEntity<String>("Skill Does Not Exist",HttpStatus.BAD_REQUEST);
+        }
+        //grab their skills
+        user.get().getSkills().forEach(allSkills::add);
+        //if skill doesn't exist, 404
+        if(!allSkills.contains(oneSkill.get())){
+            return new ResponseEntity<String>("Skill with id: "+skill_id+" was not found with user: "+user_id,HttpStatus.NOT_FOUND);
+        }
+        //if skill exists, 200
+        return new ResponseEntity<Skill>(oneSkill.get(),HttpStatus.OK);
+    }
     /* 
     * ===============================
     * END SKILL SERVICE METHODS
