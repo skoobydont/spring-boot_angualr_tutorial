@@ -6,8 +6,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.ajskubak.projectname.model.Skill;
+import com.ajskubak.projectname.model.TagModel;
 import com.ajskubak.projectname.model.UserModel;
 import com.ajskubak.projectname.repository.SkillRepository;
+import com.ajskubak.projectname.repository.TagRepository;
 import com.ajskubak.projectname.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepo;
     @Autowired
     private SkillRepository skillRepo;
+    @Autowired
+    private TagRepository tagRepo;
 
     /*
      * =============================== 
@@ -228,9 +232,136 @@ public class UserServiceImpl implements UserService {
         //if skill exists, 200
         return new ResponseEntity<Skill>(oneSkill.get(),HttpStatus.OK);
     }
+    //update skill 
+    public ResponseEntity<?> updateSkill(long skill_id, Skill skill){
+        //check if skill exists
+        Optional<Skill> exists = skillRepo.findById(skill_id);
+        if(!exists.isPresent()){
+            //no skill, 404
+            return new ResponseEntity<String>("Skill with id: "+skill_id+" not found",HttpStatus.NOT_FOUND);
+        }
+        //update and save skill
+        Skill save = exists.get();
+        save.setSkill(skill.getSkill());
+        //return updated skill and 200
+        skillRepo.save(save);
+        return new ResponseEntity<Skill>(save,HttpStatus.OK);
+    }
     /* 
     * ===============================
     * END SKILL SERVICE METHODS
+    * =============================== 
+    */
+    /* 
+    * ===============================
+    * BEGIN TAG SERVICE METHODS
+    * =============================== 
+    */
+    //get all tags
+    public ResponseEntity<?> getAllTags(){
+        //check if there are any tags
+        ArrayList<TagModel> allTags = new ArrayList<TagModel>();
+        tagRepo.findAll().forEach(allTags::add);
+        //no tags, 404
+        if(allTags.size()<1){
+            return new ResponseEntity<String>("No Tags Found",HttpStatus.NOT_FOUND);
+        }
+        //if tags, 200 and list of all tags
+        return new ResponseEntity<List<TagModel>>(allTags,HttpStatus.OK);
+    }
+    //get all tags for specific skill
+    public ResponseEntity<?> getAllTagsOfSkill(long skill_id){
+        //check if skill has tags
+        Optional<Skill> skill = skillRepo.findById(skill_id);
+        //no skill, bad request
+        if(!skill.isPresent()){
+            return new ResponseEntity<String>("Skill with id: "+skill_id+" not found",HttpStatus.BAD_REQUEST);
+        }
+        //skill with no tags, 404
+        if(skill.get().getTags().isEmpty()){
+            return new ResponseEntity<String>("Skill "+skill.get().getId()+" has no tags", HttpStatus.NOT_FOUND);
+        }
+        //else return list of skill tags
+        return new ResponseEntity<Set<TagModel>>(skill.get().getTags(),HttpStatus.OK);
+    }
+    //add tag to skill
+    public ResponseEntity<?> addTagToSkill(TagModel tag, long skill_id){
+        //check if skill exists
+        Optional<Skill> skill = skillRepo.findById(skill_id);
+        if(!skill.isPresent()){
+            //no skill, bad request
+            return new ResponseEntity<String>("Skill with id:"+skill_id+" not found", HttpStatus.BAD_REQUEST);
+        }
+        //ensure tag is not duplicate in skill already
+        for(TagModel t: skill.get().getTags()){
+            if(t.getTagDescription().equals(tag.getTagDescription())){
+                //if duplicate, conflict
+                return new ResponseEntity<String>("Tag "+tag.getId()+", "+tag.getTagDescription()+" already exists with user id:"+skill_id,HttpStatus.CONFLICT);
+            }
+        }
+        //add tag to skill's tag list
+        Skill save = skill.get();
+        save.getTags().add(tag);
+        //save skill & return 200
+        skillRepo.save(save);
+        return new ResponseEntity<TagModel>(tag,HttpStatus.CREATED);
+    }
+    //remove tag from skill
+    public ResponseEntity<?> removeTagFromSkill(long tag_id, long skill_id){
+        //check if skill exists
+        Optional<Skill> skill = skillRepo.findById(skill_id);
+        if(!skill.isPresent()){
+            //no skill, bad request
+            return new ResponseEntity<String>("Skill with id: "+skill_id+" was not found",HttpStatus.BAD_REQUEST);
+        }
+        //check if tag exists
+        Optional<TagModel> tag = tagRepo.findById(tag_id);
+        if(!tag.isPresent()){
+            return new ResponseEntity<>("Tag with id:"+tag_id+" does not exist",HttpStatus.NOT_ACCEPTABLE);
+        }
+        //check if skill has tag
+        if(!skill.get().getTags().contains(tag.get())){
+            //no tag, not found
+            return new ResponseEntity<String>("id: "+tag.get().getId()+", tag: "+tag.get().getTagDescription()+" not found with skill id:"+skill_id,HttpStatus.NOT_FOUND);
+        }
+        //remove tag from skill tag list
+        skill.get().getTags().remove(tag.get());
+        //save skill, return 200
+        skillRepo.save(skill.get());
+        return new ResponseEntity<Set<TagModel>>(skill.get().getTags(),HttpStatus.OK);
+    }
+    //update tag
+    public ResponseEntity<?> updateTag(TagModel tag, long tag_id){
+        //check if tag exists
+        Optional<TagModel> exists = tagRepo.findById(tag_id);
+        if(!exists.isPresent()){
+            //doesn't exist, not found
+            return new ResponseEntity<>("Unable to update nonexistent tag:"+tag,HttpStatus.BAD_REQUEST);
+        }
+        //exists, update
+        exists.get().setTagDescription(tag.getTagDescription());
+        //save and return 200
+        tagRepo.save(exists.get());
+        return new ResponseEntity<TagModel>(exists.get(),HttpStatus.OK);
+    }
+    //delete all tags
+    public ResponseEntity<?> deleteAllTags(){
+        //delete all tags
+        tagRepo.deleteAll();
+        //check repo for all tags
+        ArrayList<TagModel> allTags = new ArrayList<TagModel>();
+        tagRepo.findAll().forEach(allTags::add);
+        //if tags still remain, conflict
+        if(!allTags.isEmpty()){
+            return new ResponseEntity<String>("Error Deleting All Tags",HttpStatus.CONFLICT);
+        } else {//else return 200
+            return new ResponseEntity<String>("All Tags Deleted",HttpStatus.OK);
+        }
+        
+    }
+    /* 
+    * ===============================
+    * END TAG SERVICE METHODS
     * =============================== 
     */
 }

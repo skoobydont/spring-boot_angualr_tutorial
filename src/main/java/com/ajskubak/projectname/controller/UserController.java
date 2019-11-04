@@ -1,6 +1,7 @@
 package com.ajskubak.projectname.controller;
 
 import com.ajskubak.projectname.model.Skill;
+import com.ajskubak.projectname.model.TagModel;
 import com.ajskubak.projectname.model.UserModel;
 import com.ajskubak.projectname.service.UserServiceImpl;
 
@@ -89,7 +90,48 @@ public class UserController {
     public ResponseEntity<?> getSkillFromUser(@PathVariable("user_id") long user_id, @PathVariable("skill_id") long skill_id){
         return userService.getOneSkillFromUser(user_id, skill_id);
     }
+    //update skill
+    @PatchMapping(value = "/skill/{skill_id}")
+    public ResponseEntity<?> updateSkill(@PathVariable("skill_id") long skill_id, @RequestBody Skill skill){
+        return userService.updateSkill(skill_id, skill);
+    }
     /* ===============================
     END SKILL ENDPOINTS
+    =============================== */
+    /* ===============================
+    BEGIN TAG ENDPOINTS
+    =============================== */
+    //get all tags regardless of skill
+    @GetMapping(value = "/tags")
+    public ResponseEntity<?> getAllTags(){
+        return userService.getAllTags();
+    }
+    //get all tags for skill
+    @GetMapping(value = "/skill/{skill_id}/tags")
+    public ResponseEntity<?> getAllTagsForSkill(@PathVariable("skill_id") long skill_id){
+        return userService.getAllTagsOfSkill(skill_id);
+    }
+    //add tag to skill
+    @PostMapping(value = "/skill/{skill_id}")
+    public ResponseEntity<?> addTagToSkill(@PathVariable("skill_id") long skill_id, @RequestBody TagModel tag){
+        return userService.addTagToSkill(tag, skill_id);
+    }
+    //remove tag from skill
+    @DeleteMapping(value = "/skill/{skill_id}/tags/{tag_id}")
+    public ResponseEntity<?> removeTagFromSkill(@PathVariable("skill_id") long skill_id, @PathVariable("tag_id") long tag_id){
+        return userService.removeTagFromSkill(tag_id, skill_id);
+    }
+    //update tag
+    @PatchMapping(value = "/tag/{tag_id}")
+    public ResponseEntity<?> updateTag(@RequestBody TagModel tag, @PathVariable("tag_id") long tag_id){
+        return userService.updateTag(tag, tag_id);
+    }
+    //delete all tags
+    @DeleteMapping(value ="/tags")
+    public ResponseEntity<?> deleteAllTags() {
+        return userService.deleteAllTags();
+    }
+    /* ===============================
+    END TAG ENDPOINTS
     =============================== */
 }

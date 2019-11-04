@@ -5,14 +5,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.ResultHandler.*;
 
 import java.util.ArrayList;
 
 import javax.transaction.Transactional;
 
 import com.ajskubak.projectname.model.Skill;
+import com.ajskubak.projectname.model.TagModel;
 import com.ajskubak.projectname.model.UserModel;
 import com.ajskubak.projectname.service.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -45,6 +47,8 @@ public class ProjectnameApplicationTests {
 	UserModel user6 = new UserModel(1,"6S3R","D36T");
 	Skill skill1 = new Skill("sk1ll");
 	Skill skill2 = new Skill("sk2ll");
+	TagModel tag1 = new TagModel("tag1");
+	TagModel tag2 = new TagModel("tag2");
 
 	//this objmapper will help us write objects as json strings for testing
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -55,7 +59,10 @@ public class ProjectnameApplicationTests {
 	@Before public void deleteAllUsers() throws Exception {
 		userService.deleteAllUsers();
 	}
-	
+	/* ==================================================================================
+	* BEGIN USER TESTS
+	* ===================================================================================
+	*/
 	//test if we can add user successfully 
 	@Transactional
 	@Test
@@ -211,7 +218,14 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(user6))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
-
+	/* ==================================================================================
+	* END USER TESTS
+	* ===================================================================================
+	*/
+	/* ==================================================================================
+	* BEGIN SKILL TESTS
+	* ===================================================================================
+	*/
 	//test if we can add a skill to user
 	@Transactional
 	@Test
@@ -362,8 +376,8 @@ public class ProjectnameApplicationTests {
 		//validate if user has skills
 		mock.perform(get("/user/"+user1.getId()+"/skills")).andExpect(status().isOk());
 		//delete skill from user1
-		//tried using skill1.getId() but with auto generated annotation, the id of skill1 is 8
-		mock.perform(delete("/user/"+user1.getId()+"/skill/8")).andExpect(status().isOk());
+		//tried using skill1.getId() but with auto generated annotation, the id of skill1 is 10
+		mock.perform(delete("/user/"+user1.getId()+"/skill/10")).andExpect(status().isOk());
 		//validate user1 has no skills; noob
 		mock.perform(get("/user/"+user1.getId()+"/skills")).andExpect(status().isNotFound());
 		//test fails when run in isolation but with mvn verify, it passes
@@ -396,8 +410,8 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//test if conflict when trying to delete skill 1 from user 1
-		mock.perform(delete("/user/1/skill/14")).andExpect(status().isConflict());
-		//auto generated id for this skill is 14
+		mock.perform(delete("/user/1/skill/21")).andExpect(status().isConflict());
+		//auto generated id for this skill is 21
 	}
 	//test if we can get one skill from user
 	@Transactional
@@ -412,7 +426,7 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//test if get one skill returns 200
-		mock.perform(get("/user/"+user1.getId()+"/skill/9")).andExpect(status().isOk());
+		mock.perform(get("/user/"+user1.getId()+"/skill/11")).andExpect(status().isOk());
 	}
 	//test if we get 404 from get one skill of user
 	@Transactional
@@ -431,6 +445,193 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//try to access skill from user 2
-		mock.perform(get("/user/2/skill/7")).andExpect(status().isNotFound());
+		mock.perform(get("/user/2/skill/8")).andExpect(status().isNotFound());
 	}
+	//test if update skill success
+	@Transactional
+	@Test
+	public void updateOneSkillofUserSuccessTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//update skill
+		mock.perform(patch("/skill/7")
+		.content(OBJECT_MAPPER.writeValueAsString(skill2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		//validate
+	}
+	//test if update skill failure
+	@Transactional
+	@Test
+	public void updateOneSkillofUserFailureTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//try to update nonexistent skill
+		mock.perform(patch("/skill/7")
+		.content(OBJECT_MAPPER.writeValueAsString(skill2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+	}
+	/* ==================================================================================
+	* END SKILL TESTS
+	* ===================================================================================
+	*/
+	/* ==================================================================================
+	* BEGIN TAG TESTS
+	* ===================================================================================
+	*/
+	//test add tag success
+	@Transactional
+	@Test
+	public void addTagSuccessTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag to skill
+		mock.perform(post("/skill/25")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+	}
+	//test if add duplicate tag to skill errors
+	@Transactional
+	@Test
+	public void addDuplicateTagToSkillTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag to skill
+		mock.perform(post("/skill/15")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//try to add same tag again
+		mock.perform(post("/skill/15")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
+	}
+	//test adding tag to nonexistent skill
+	@Transactional
+	@Test
+	public void addTagToNonexistentSkillTest() throws Exception {
+		mock.perform(post("/skill/2")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+	}
+	//test get all tags regardless of skill
+	@Transactional
+	@Test
+	public void getAllTagsRegardlessOfSkillSuccessTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add user2
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill to user1
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag to skill
+		mock.perform(post("/skill/13")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill to user2
+		mock.perform(post("/user/2")
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag to skill
+		mock.perform(post("/skill/14")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//test if get all tags results in 200
+		mock.perform(get("/tags")).andExpect(status().isOk());
+	}
+	//test if get all tags when empty returns 404
+	@Transactional
+	@Test
+	public void getAllTagsNotFoundTest() throws Exception {
+		//delete all tags
+		mock.perform(delete("/tags")).andExpect(status().isOk());
+		//ensure get all returns 404
+		mock.perform(get("/tags")).andExpect(status().isNotFound());
+	}
+	//test if get all tags from one skill
+	@Transactional
+	@Test
+	public void getAllTagsFromSkillSuccessTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add user2
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill to user1
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag to skill
+		mock.perform(post("/skill/19")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill to user2
+		mock.perform(post("/user/2")
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag to skill
+		mock.perform(post("/skill/20")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//get tags for skill1 user1
+		mock.perform(get("/skill/19/tags")).andExpect(status().isOk());
+		//get tags for skill1 user2
+		mock.perform(get("/skill/20/tags")).andExpect(status().isOk());
+	}
+	//test if get tag from nonexistent skill
+	@Transactional
+	@Test
+	public void getTagsFromNonexistentSkillTest() throws Exception {
+		mock.perform(get("/skill/1/tags")).andExpect(status().isBadRequest());
+	}
+	//test if skill exists but no tags
+	@Transactional
+	@Test
+	public void getTagsFromSkillFailureTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//check if error
+		mock.perform(get("/skill/9/tags")).andExpect(status().isNotFound());
+	}
+	/* ==================================================================================
+	* END TAG TESTS
+	* ===================================================================================
+	*/
 }
