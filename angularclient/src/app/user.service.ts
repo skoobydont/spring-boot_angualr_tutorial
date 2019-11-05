@@ -5,6 +5,7 @@ import { Skill } from './skill';
 import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
 import { HttpClient } from '@angular/common/http';
+import { Tag } from './tag';
 
 @Injectable({
   providedIn: 'root'
@@ -46,5 +47,13 @@ export class UserService {
   getSkill(user_id: number, skill_id: number): Observable<Skill> {
     this.messageService.add('fetch skill: '+skill_id+' from user'+user_id);
     return this.http.get<Skill>(this.userUrl+'/'+user_id+'/skill/'+skill_id);
+  }
+  getSkillTags(skill_id: number): Observable<Tag[]> {
+    this.messageService.add('fetch tags for skill:'+skill_id);
+    return this.http.get<Tag[]>('http://localhost:8080/skill/'+skill_id+'/tags');
+  }
+  getTag(skill_id: number, tag_id: number): Observable<Tag> {
+    this.messageService.add('fetch tag:'+tag_id);
+    return this.http.get<Tag>('http://localhost:8080/skill/'+skill_id+'/tag/'+tag_id);
   }
 }

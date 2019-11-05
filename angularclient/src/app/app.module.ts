@@ -13,6 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AddUserComponent } from './add-user/add-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
 import { SkillDetailComponent } from './skill-detail/skill-detail.component';
+import { TagDetailComponent } from './tag-detail/tag-detail.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { SkillDetailComponent } from './skill-detail/skill-detail.component';
     DashboardComponent,
     AddUserComponent,
     DeleteUserComponent,
-    SkillDetailComponent
+    SkillDetailComponent,
+    TagDetailComponent
   ],
   imports: [
     BrowserModule,

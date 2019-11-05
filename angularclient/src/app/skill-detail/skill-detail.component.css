@@ -9,7 +9,7 @@ table {
     border-collapse: collapse;
     border: 1px solid white;
 }
-td {
+td, th {
     padding: 1em;
     border-bottom: 1px solid white;
     border-right: 1px dashed white;
@@ -21,4 +21,14 @@ button {
 button.back:hover {
     background-color: indigo;
     color: yellowgreen;
+}
+a {
+    text-decoration: none;
+    color: white;
+}
+tr:hover {
+    background-color: yellowgreen;
+}
+tr:hover a {
+    color: black;
 }

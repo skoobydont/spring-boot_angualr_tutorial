@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { MessageService } from '../message.service';
+import { Tag } from '../tag';
 
 @Component({
   selector: 'app-skill-detail',
@@ -12,6 +13,7 @@ import { MessageService } from '../message.service';
 })
 export class SkillDetailComponent implements OnInit {
   @Input() skill: Skill;
+  @Input() allTags: Tag[];
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
@@ -22,6 +24,7 @@ export class SkillDetailComponent implements OnInit {
 
   ngOnInit() {
     this.getSkill();
+    this.getSkillTags();
   }
 
   getSkill(): void {
@@ -31,5 +34,10 @@ export class SkillDetailComponent implements OnInit {
   }
   goBack(): void {
     this.location.back();
+  }
+  getSkillTags(): void {
+    const skill_id = +this.route.snapshot.paramMap.get('skill_id');
+    this.messagingService.add('skill detail trying to get tags for skill:'+skill_id);
+    this.userService.getSkillTags(skill_id).subscribe(tag => this.allTags = tag);
   }
 }

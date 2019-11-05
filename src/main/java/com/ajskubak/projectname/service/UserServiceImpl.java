@@ -336,7 +336,7 @@ public class UserServiceImpl implements UserService {
         Optional<TagModel> exists = tagRepo.findById(tag_id);
         if(!exists.isPresent()){
             //doesn't exist, not found
-            return new ResponseEntity<>("Unable to update nonexistent tag:"+tag,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Unable to update nonexistent tag:"+tag,HttpStatus.BAD_REQUEST);
         }
         //exists, update
         exists.get().setTagDescription(tag.getTagDescription());

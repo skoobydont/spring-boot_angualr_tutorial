@@ -410,8 +410,8 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//test if conflict when trying to delete skill 1 from user 1
-		mock.perform(delete("/user/1/skill/21")).andExpect(status().isConflict());
-		//auto generated id for this skill is 21
+		mock.perform(delete("/user/1/skill/25")).andExpect(status().isConflict());
+		//auto generated id for this skill is 25
 	}
 	//test if we can get one skill from user
 	@Transactional
@@ -503,7 +503,7 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add tag to skill
-		mock.perform(post("/skill/25")
+		mock.perform(post("/skill/31")
 		.content(OBJECT_MAPPER.writeValueAsString(tag1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 	}
@@ -520,11 +520,11 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add tag to skill
-		mock.perform(post("/skill/15")
+		mock.perform(post("/skill/16")
 		.content(OBJECT_MAPPER.writeValueAsString(tag1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//try to add same tag again
-		mock.perform(post("/skill/15")
+		mock.perform(post("/skill/16")
 		.content(OBJECT_MAPPER.writeValueAsString(tag1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
 	}
@@ -553,7 +553,7 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add tag to skill
-		mock.perform(post("/skill/13")
+		mock.perform(post("/skill/14")
 		.content(OBJECT_MAPPER.writeValueAsString(tag1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add skill to user2
@@ -561,7 +561,7 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add tag to skill
-		mock.perform(post("/skill/14")
+		mock.perform(post("/skill/15")
 		.content(OBJECT_MAPPER.writeValueAsString(tag1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//test if get all tags results in 200
@@ -593,7 +593,7 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add tag to skill
-		mock.perform(post("/skill/19")
+		mock.perform(post("/skill/23")
 		.content(OBJECT_MAPPER.writeValueAsString(tag1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add skill to user2
@@ -601,13 +601,13 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add tag to skill
-		mock.perform(post("/skill/20")
+		mock.perform(post("/skill/24")
 		.content(OBJECT_MAPPER.writeValueAsString(tag1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//get tags for skill1 user1
-		mock.perform(get("/skill/19/tags")).andExpect(status().isOk());
+		mock.perform(get("/skill/23/tags")).andExpect(status().isOk());
 		//get tags for skill1 user2
-		mock.perform(get("/skill/20/tags")).andExpect(status().isOk());
+		mock.perform(get("/skill/24/tags")).andExpect(status().isOk());
 	}
 	//test if get tag from nonexistent skill
 	@Transactional
@@ -629,6 +629,108 @@ public class ProjectnameApplicationTests {
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//check if error
 		mock.perform(get("/skill/9/tags")).andExpect(status().isNotFound());
+	}
+	//test if can remove tag from skill
+	@Transactional
+	@Test
+	public void removeTagFromSkillSuccessTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag
+		mock.perform(post("/skill/20")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn().getResponse();
+		mock.perform(get("/skill/20/tags")).andExpect(status().isOk());
+		//remove tag
+		mock.perform(delete("/skill/20/tags/5")).andExpect(status().isOk());
+		//check if skill has any tags
+		mock.perform(get("/skill/20/tags")).andExpect(status().isNotFound());
+	}
+	//try to remove tag from nonexistent skill
+	@Transactional
+	@Test
+	public void removeTagFromNonexistentSkill() throws Exception {
+		//try to add skill to nonexistent skill
+		mock.perform(delete("/skill/15/tags/5")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+	}
+	//try to remove nonexistent tag from skill
+	@Transactional
+	@Test
+	public void removeNonexistentTagFromSkillTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//try to remove nonexistent tag
+		mock.perform(delete("/skill/29/tags/5")).andExpect(status().isNotAcceptable());
+	}
+	//test if remove existing tag from skill that does not have that tag
+	@Transactional
+	@Test
+	public void removeTagFromUnassociatedSkillTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill1
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill2
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag to skill1
+		mock.perform(post("/skill/22")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		mock.perform(get("/skill/22/tags")).andExpect(status().isOk());
+		//try to remove tag from skill2
+		mock.perform(delete("/skill/21/tags/6")).andExpect(status().isNotFound());
+	}
+	//test if can update existing tag
+	@Transactional
+	@Test
+	public void updateExistingTagTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add skill
+		mock.perform(post("/user/"+user1.getId())
+		.content(OBJECT_MAPPER.writeValueAsString(skill1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//add tag to skill
+		mock.perform(post("/skill/13")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		//check tags
+		mock.perform(get("/skill/13/tags")).andExpect(status().isOk());
+		//update tag
+		mock.perform(patch("/tag/1")
+		.content(OBJECT_MAPPER.writeValueAsString(tag2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+	}
+	//test updating nonexistent tag
+	@Transactional
+	@Test
+	public void updateNonexistentTagTest() throws Exception {
+		//update nonexistent tag
+		mock.perform(patch("/tag/1")
+		.content(OBJECT_MAPPER.writeValueAsString(tag1))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 	}
 	/* ==================================================================================
 	* END TAG TESTS
