@@ -1,6 +1,7 @@
 package com.ajskubak.projectname;
 
 import com.ajskubak.projectname.model.Skill;
+import com.ajskubak.projectname.model.TagModel;
 import com.ajskubak.projectname.model.UserModel;
 import com.ajskubak.projectname.repository.UserRepository;
 import com.ajskubak.projectname.service.UserServiceImpl;
@@ -26,6 +27,8 @@ public class ProjectnameApplication {
 			userRepo.findAll().forEach(System.out::println);
 			Skill skill1 = new Skill("sk1ll");
 			Skill skill2 = new Skill("sk2ll");
+			TagModel tag1 = new TagModel("Design");
+			skill1.getTags().add(tag1);
 			user2.getSkills().add(skill1);
 			user2.getSkills().add(skill2);
 			user3.getSkills().add(skill2);
