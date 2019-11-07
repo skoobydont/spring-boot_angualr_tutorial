@@ -106,12 +106,25 @@ public class UserServiceImpl implements UserService {
 
     // update user by id
     public ResponseEntity<?> updateUserById(UserModel user) throws Exception {
-        if (user.getUsername().isEmpty() || user.getDept().isEmpty()) {
+        //check if given fields are empty
+        if (user.getUsername().isEmpty() && user.getDept().isEmpty()) {
             return new ResponseEntity<String>("Cannot Update With Empty Fields", HttpStatus.NO_CONTENT);
-        }
-        if (!userRepo.existsById(user.getId())) {
+        }//check if user exists to update
+        Optional<UserModel> update = userRepo.findById(user.getId());
+        if (!update.isPresent()) {
             return new ResponseEntity<String>("User with Id: " + user.getId() + " Not Found", HttpStatus.NOT_FOUND);
         }
+        //if username field is empty, simply update department
+        if(user.getUsername().isEmpty()){
+            user.setUsername(update.get().getUsername());
+        }
+        //if dept empty, update username
+        if(user.getDept().isEmpty()){
+            user.setDept(update.get().getDept());
+        }
+        //keep skills + tags the same
+        user.setSkills(update.get().getSkills());
+        //save user into repo
         userRepo.save(user);
         return new ResponseEntity<UserModel>(user, HttpStatus.OK);
     }
@@ -144,7 +157,7 @@ public class UserServiceImpl implements UserService {
         }//if skill not found within user skill list, add to user list and save user
         UserModel save = user.get();
         save.getSkills().add(skill);
-        //skill.getUsers().add(save);
+        //save user with list of skills
         userRepo.save(save);
         return new ResponseEntity<UserModel>(save,HttpStatus.CREATED);
         
@@ -197,7 +210,7 @@ public class UserServiceImpl implements UserService {
                 skillRepo.delete(skillRepo.getOne(skill_id));
             } //return 200
             userRepo.save(user.get());
-            return new ResponseEntity<String>("Skill removed",HttpStatus.OK);
+            return new ResponseEntity<Set<Skill>>(user.get().getSkills(),HttpStatus.OK);
         }
     }
     //delete all skills
@@ -242,7 +255,12 @@ public class UserServiceImpl implements UserService {
         }
         //update and save skill
         Skill save = exists.get();
-        save.setSkill(skill.getSkill());
+        //if skill description is not blank, set it equal to skill being saved
+        if(!skill.getSkill().isEmpty()){
+            save.setSkill(skill.getSkill());
+        }
+        //keep tags
+        save.setTags(exists.get().getTags());
         //return updated skill and 200
         skillRepo.save(save);
         return new ResponseEntity<Skill>(save,HttpStatus.OK);

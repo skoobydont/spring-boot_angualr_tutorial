@@ -25,7 +25,7 @@ import { TagDetailComponent } from './tag-detail/tag-detail.component';
     AddUserComponent,
     DeleteUserComponent,
     SkillDetailComponent,
-    TagDetailComponent
+    TagDetailComponent,
   ],
   imports: [
     BrowserModule,

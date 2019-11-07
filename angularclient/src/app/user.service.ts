@@ -13,8 +13,9 @@ import { Tag } from './tag';
 export class UserService {
   constructor(private http: HttpClient, private messageService: MessageService) { }
   private userUrl = 'http://localhost:8080/user';
-  private skillUrl = 'http://localhost:8080/skills';
+  private skillUrl = 'http://localhost:8080/skill';
   newUser: User;
+  // BEGIN USER METHODS
   getUsers(): Observable<User[]>{
     this.messageService.add('UserService: fetched all users');
     return this.http.get<User[]>(this.userUrl);
@@ -35,10 +36,11 @@ export class UserService {
   deleteUser(id: number) {
     this.messageService.add('User with id: '+id+' deleted');
     return this.http.delete(this.userUrl+'/'+id);
-  }
+  }// END USER METHODS
+  // BEGIN SKILL METHODS
   getAllSkills(): Observable<Skill[]>{
     this.messageService.add('Got all skills');
-    return this.http.get<Skill[]>(this.skillUrl);
+    return this.http.get<Skill[]>(this.skillUrl+'s/');
   }
   getUserSkills(id: number): Observable<Skill[]>{
     this.messageService.add('Get the skills for user: '+id);
@@ -48,12 +50,27 @@ export class UserService {
     this.messageService.add('fetch skill: '+skill_id+' from user'+user_id);
     return this.http.get<Skill>(this.userUrl+'/'+user_id+'/skill/'+skill_id);
   }
+  addSkill(user_id: number, newSkill: Skill){
+    this.messageService.add('Added Skill '+newSkill.skill);
+    return this.http.post(this.userUrl+'/'+user_id,newSkill);
+  }
+  updateSkill(skill: Skill) {
+    this.messageService.add('Updated Skill:'+skill.id+' to : '+skill.skill);
+    return this.http.patch(this.skillUrl+'/'+skill.id,skill);
+  }
+  deleteSkillFromUser(skill: Skill, user_id: number){
+    this.messageService.add('Delete skill:'+skill.skill+' from user:'+user_id);
+    return this.http.delete(this.userUrl+'/'+user_id+'/skill/'+skill.id);
+  }
+  //END SKILL METHODS
+  // BEGIN TAG METHODS
   getSkillTags(skill_id: number): Observable<Tag[]> {
     this.messageService.add('fetch tags for skill:'+skill_id);
-    return this.http.get<Tag[]>('http://localhost:8080/skill/'+skill_id+'/tags');
+    return this.http.get<Tag[]>(this.skillUrl+'/'+skill_id+'/tags');
   }
   getTag(skill_id: number, tag_id: number): Observable<Tag> {
     this.messageService.add('fetch tag:'+tag_id);
-    return this.http.get<Tag>('http://localhost:8080/skill/'+skill_id+'/tag/'+tag_id);
+    return this.http.get<Tag>(this.skillUrl+'/'+skill_id+'/tag/'+tag_id);
   }
+
 }

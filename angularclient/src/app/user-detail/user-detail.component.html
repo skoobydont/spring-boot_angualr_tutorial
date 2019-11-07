@@ -16,12 +16,19 @@
     </form>
     <button (click)="goBack()">go back</button>
     <button routerLink="/delete/{{ user.id }}" class="delete">Delete</button>
-    <h2>Skills</h2>
+    <h2>Skills <a class="addSkill" (click)="showAddSkill()">+</a></h2>
     <table>
-        <th colspan="2">Id : Name</th>
+        <th colspan="3">Id : Name</th>
         <tr *ngFor="let skills of allSkills">
             <td><a routerLink="./skill/{{skills.id}}">{{skills.id}}</a></td>
             <td><a routerLink="./skill/{{skills.id}}">{{skills.skill}}</a></td>
+            <td><a type="button" class="deleteSkill" (click)="deleteSkill(skills)">-</a></td>
+        </tr>
+        <tr *ngIf="addNewSkill">
+            <td colspan="3"><form [formGroup]="newSkillForm" (ngSubmit)="addSkill()">
+                <input type="hidden" formControlName="id">
+                <input formControlName="skill" placeholder="skill desc"><button type="submit">Add!</button>
+            </form></td>
         </tr>
     </table>
 </div>

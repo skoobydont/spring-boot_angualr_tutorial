@@ -19,7 +19,7 @@ button {
     color: indigo;
 }
 button.back:hover {
-    background-color: indigo;
+    background-color: transparent;
     color: yellowgreen;
 }
 a {
@@ -31,4 +31,31 @@ tr:hover {
 }
 tr:hover a {
     color: black;
+}
+form {
+    max-width: 50%;
+    text-align: center;
+}
+input {
+    text-align: center;
+    max-width: 75%;
+}
+h2, h3, form, table {
+    text-align: center;
+    margin: .5em auto;
+}
+.update:hover {
+    background-color: gold;
+}
+.add:hover, .delete:hover {
+    color: white;
+}
+.add:hover {
+    background-color: green;
+}
+.delete:hover {
+    background-color: red;
+}
+a:hover {
+    text-decoration: underline;
 }

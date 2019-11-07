@@ -34,12 +34,48 @@ table {
 }
 th, td {
     border-bottom: 1px solid white;
-    padding: .5em;
+    padding: 1em;
+    border-right: 1px solid white;
 }
 a {
     text-decoration: none;
     color: white;
+    cursor: pointer;
+}
+a:hover {
+    text-decoration: underline;
 }
 tr:hover {
     background-color: grey;
+}
+a.deleteSkill{
+    font-size: 1em;
+    padding: .2em .5em .2em .5em;
+    margin-top: 0em;
+    background-color: transparent;
+    border: 1px solid red;
+    color: red;
+    font-weight: bolder;
+    border-radius: 1em;
+}
+.deleteSkill:hover {
+    color: white;
+    border: 1px solid white;
+    background-color: red;
+    text-decoration: none;
+}
+a.addSkill {
+    font-size: 1em;
+    margin-top: 0em;
+    padding: .25em .5em .25em .5em;
+    background-color: transparent;
+    border: 1px solid green;
+    border-radius: 1em;
+    color: green;
+}
+.addSkill:hover{
+    color: white;
+    border: 1px solid white;
+    background-color: green;
+    text-decoration: none;
 }

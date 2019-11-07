@@ -45,6 +45,7 @@ public class ProjectnameApplicationTests {
 	UserModel user4 = new UserModel("","dept");
 	UserModel user5 = new UserModel("US4R","");
 	UserModel user6 = new UserModel(1,"6S3R","D36T");
+	UserModel emptyUser = new UserModel("","");
 	Skill skill1 = new Skill("sk1ll");
 	Skill skill2 = new Skill("sk2ll");
 	TagModel tag1 = new TagModel("tag1");
@@ -171,10 +172,10 @@ public class ProjectnameApplicationTests {
 		//ensure empty users by trying to get all and erroring
 		mock.perform(get("/user")).andExpect(status().isNoContent());
 	}
-	//test if update blank user sends no content 204
+	//test if update blank field still updates user
 	@Transactional
 	@Test
-	public void updateUserWithBlankFieldsTest() throws Exception {
+	public void updateUserWithBlankUsernameOrDepartmentTest() throws Exception {
 		//add a user
 		mock.perform(post("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user2))
@@ -182,10 +183,23 @@ public class ProjectnameApplicationTests {
 		//try to update with blank username
 		mock.perform(patch("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user4))
-		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 		//try to update with blank dept
 		mock.perform(patch("/user")
 		.content(OBJECT_MAPPER.writeValueAsString(user5))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+	}
+	//test if updating user with blank fields returns no content
+	@Transactional
+	@Test
+	public void updateUserWithEmptyFieldsTest() throws Exception {
+		//add user
+		mock.perform(post("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(user2))
+		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());		
+		//try to update it with empty fields
+		mock.perform(patch("/user")
+		.content(OBJECT_MAPPER.writeValueAsString(emptyUser))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
 	}
 	//test if update nonexistent user returns 404 not found
@@ -503,7 +517,7 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//add tag to skill
-		mock.perform(post("/skill/31")
+		mock.perform(post("/skill/30")
 		.content(OBJECT_MAPPER.writeValueAsString(tag1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 	}
@@ -648,7 +662,7 @@ public class ProjectnameApplicationTests {
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn().getResponse();
 		mock.perform(get("/skill/20/tags")).andExpect(status().isOk());
 		//remove tag
-		mock.perform(delete("/skill/20/tags/5")).andExpect(status().isOk());
+		mock.perform(delete("/skill/20/tags/6")).andExpect(status().isOk());
 		//check if skill has any tags
 		mock.perform(get("/skill/20/tags")).andExpect(status().isNotFound());
 	}
@@ -674,7 +688,7 @@ public class ProjectnameApplicationTests {
 		.content(OBJECT_MAPPER.writeValueAsString(skill1))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		//try to remove nonexistent tag
-		mock.perform(delete("/skill/29/tags/5")).andExpect(status().isNotAcceptable());
+		mock.perform(delete("/skill/28/tags/5")).andExpect(status().isNotAcceptable());
 	}
 	//test if remove existing tag from skill that does not have that tag
 	@Transactional
@@ -698,7 +712,7 @@ public class ProjectnameApplicationTests {
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 		mock.perform(get("/skill/22/tags")).andExpect(status().isOk());
 		//try to remove tag from skill2
-		mock.perform(delete("/skill/21/tags/6")).andExpect(status().isNotFound());
+		mock.perform(delete("/skill/21/tags/7")).andExpect(status().isNotFound());
 	}
 	//test if can update existing tag
 	@Transactional
@@ -719,7 +733,7 @@ public class ProjectnameApplicationTests {
 		//check tags
 		mock.perform(get("/skill/13/tags")).andExpect(status().isOk());
 		//update tag
-		mock.perform(patch("/tag/1")
+		mock.perform(patch("/tag/2")
 		.content(OBJECT_MAPPER.writeValueAsString(tag2))
 		.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
