@@ -394,6 +394,28 @@ public class UserServiceImpl implements UserService {
         }
         
     }
+    //get one tag from skill
+    public ResponseEntity<?> getOneTagFromSkill(long skill_id, long tag_id){
+        //placeholder obj for skill
+        Optional<Skill> skill = skillRepo.findById(skill_id);
+        //obj to hold all tags of skill
+        ArrayList<TagModel> allTags = new ArrayList<TagModel>();
+        //placeholder obj for tag
+        Optional<TagModel> tag = tagRepo.findById(tag_id);
+        //check if tag exists
+        if(!tag.isPresent()){
+            return new ResponseEntity<String>("Tag does not exist",HttpStatus.BAD_REQUEST);
+        }
+        //add tags to all tags
+        skill.get().getTags().forEach(allTags::add);
+        //check if tag is in list
+        if(!allTags.contains(tag.get())){
+            //no tag, 404
+            return new ResponseEntity<String>("Tag with id:"+tag_id+" was not found with skill id:"+skill_id,HttpStatus.NOT_FOUND);
+        }
+        //return tag related to skill
+        return new ResponseEntity<TagModel>(tag.get(),HttpStatus.OK);
+    }
     /* 
     * ===============================
     * END TAG SERVICE METHODS

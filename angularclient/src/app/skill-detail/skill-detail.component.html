@@ -3,27 +3,30 @@
     <form [formGroup]="updateSkillForm" (ngSubmit)="updateSkill()">
         <label>
             Update Skill Description:
-            <input type="text" formControlName="desc" placeholder="{{skill.skill}}"/>
+            <input type="text" formControlName="skill" placeholder="{{skill.skill}}"/>
         </label>
         <button type="submit" class="update">Update Skill</button>
     </form>
     <h3>Skill Tags <button class="add" (click)="showAddTag()">+</button></h3>
     <table>
-        <th colspan="3">Id : Description</th>
-        <tr *ngIf="showAddSkill">
-          <td colspan="3">
-            <form [formGroup]="addTagForm" (ngSubmit)="addTag()">
-              <input type="hidden" formControlName="id">
-              <input type="text" formControlName="tagDescription" placeholder="tag description">
-              <button type="submit">Add</button>
-            </form>
+      <tr *ngIf="showAddSkill" class="addTag">
+        <td colspan="3">
+          Add New Tag
+          <form [formGroup]="addTagForm" (ngSubmit)="addTag()">
+            <input type="hidden" formControlName="id">
+            <input type="text" formControlName="tagDescription" placeholder="tag description">
+            <button type="submit" class="add">Add</button>
+          </form>
+        </td>
+      </tr>
+      <th colspan="3">Id : Description</th>
+      <tr *ngFor="let tag of allTags">
+          <td><a routerLink="./tag/{{tag.id}}">{{tag.id}}</a></td>
+          <td>
+            <a routerLink="./tag/{{tag.id}}">{{tag.tagDescription}}</a>
           </td>
-        </tr>
-        <tr *ngFor="let tag of allTags">
-            <td><a routerLink="./tag/{{tag.id}}">{{tag.id}}</a></td>
-            <td><a routerLink="./tag/{{tag.id}}">{{tag.tagDescription}}</a></td>
-            <td><button class="delete" (click)="deleteTag(tag)">-</button></td>
-        </tr>
+          <td><button class="delete" (click)="deleteTag(tag)">-</button></td>
+      </tr>
     </table>
     <button (click)="goBack()" class="back">Go Back</button>
 </div>

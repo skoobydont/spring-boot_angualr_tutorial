@@ -14,6 +14,7 @@ export class UserService {
   constructor(private http: HttpClient, private messageService: MessageService) { }
   private userUrl = 'http://localhost:8080/user';
   private skillUrl = 'http://localhost:8080/skill';
+  private tagUrl = 'http://localhost:8080/tag';
   newUser: User;
   // BEGIN USER METHODS
   getUsers(): Observable<User[]>{
@@ -85,5 +86,10 @@ export class UserService {
     this.messageService.add('Delete tag id: ' + tag.id);
     // call api and return result
     return this.http.delete(this.skillUrl + '/' + skill_id + '/tags/' + tag.id);
+  }
+  // update tag
+  updateTag(tag: Tag) {
+    this.messageService.add('Updated Skill');
+    return this.http.patch(this.tagUrl+'/'+tag.id,tag);
   }
 }

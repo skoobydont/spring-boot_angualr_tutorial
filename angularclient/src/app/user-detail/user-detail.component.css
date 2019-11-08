@@ -1,11 +1,9 @@
 .details {
-    margin: auto;
     padding: 1.5em;
     background-color: #000000;
     border-radius: .5em;
     box-shadow: 0em .5em .5em teal;
     color: #ffffff;
-    max-width: 75%;
 }
 .details input {
     text-align: center;
@@ -31,11 +29,15 @@ table {
     text-align: center;
     border-collapse: collapse;
     border: 1px solid white;
+    min-width: 333px;
 }
 th, td {
     border-bottom: 1px solid white;
     padding: 1em;
     border-right: 1px solid white;
+}
+tr {
+    max-width: max-content;
 }
 a {
     text-decoration: none;

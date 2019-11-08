@@ -31,7 +31,7 @@ export class SkillDetailComponent implements OnInit {
   // name and attributes of update skill form
   updateSkillForm = new FormGroup({
     id: new FormControl(''),
-    description: new FormControl('')
+    skill: new FormControl('')
   });
   // name + attributes of new tag form
   addTagForm = new FormGroup({
@@ -60,8 +60,6 @@ export class SkillDetailComponent implements OnInit {
   getSkillTags(): void {
     // grab skill id from url
     const skill_id = +this.route.snapshot.paramMap.get('skill_id');
-    // add message to msg service
-    this.messagingService.add('skill detail trying to get tags for skill:'+skill_id);
     // call user service to get list of tags per skill id
     this.userService.getSkillTags(skill_id).subscribe(tag => this.allTags = tag);
   }
@@ -70,7 +68,7 @@ export class SkillDetailComponent implements OnInit {
     // placeholder obj created with update form values
     let update: Skill = {
       id: this.skill.id,
-      skill: this.updateSkillForm.controls.desc.value
+      skill: this.updateSkillForm.controls.skill.value
     }; // add message
     this.messagingService.add('Skill id:' + update.id + ' has been updated to '+update.skill);
     // pass update skill obj to service update method + subscribe to result

@@ -1,1 +1,11 @@
-<p>tag-detail works!</p>
+<div *ngIf="tag">
+    <h2>Tag: {{ tag.id }}, {{ tag.tagDescription }}</h2>
+    <form [formGroup]="updateTagForm" (ngSubmit)="updateTag()">
+        <label>
+            Tag Description:
+            <input type="text" formControlName="tagDescription" placeholder="{{tag.tagDescription}}">
+        </label>
+        <button type="submit">update tag</button>
+    </form>
+</div>
+<button (click)="goBack()">go back</button>

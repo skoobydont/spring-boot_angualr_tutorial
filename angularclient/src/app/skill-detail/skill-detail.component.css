@@ -8,6 +8,7 @@
 table {
     border-collapse: collapse;
     border: 1px solid white;
+    min-width: 333px;
 }
 td, th {
     padding: 1em;
@@ -58,4 +59,8 @@ h2, h3, form, table {
 }
 a:hover {
     text-decoration: underline;
+    cursor: pointer;
+}
+tr.addTag:hover {
+    background-color: purple;
 }

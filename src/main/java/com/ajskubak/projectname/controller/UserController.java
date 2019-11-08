@@ -111,6 +111,11 @@ public class UserController {
     public ResponseEntity<?> getAllTagsForSkill(@PathVariable("skill_id") long skill_id){
         return userService.getAllTagsOfSkill(skill_id);
     }
+    //get one tag from skill
+    @GetMapping(value = "/skill/{skill_id}/tag/{tag_id}")
+    public ResponseEntity<?> getOneTagFromSkill(@PathVariable("skill_id") long skill_id, @PathVariable("tag_id") long tag_id){
+        return userService.getOneTagFromSkill(skill_id, tag_id);
+    }
     //add tag to skill
     @PostMapping(value = "/skill/{skill_id}")
     public ResponseEntity<?> addTagToSkill(@PathVariable("skill_id") long skill_id, @RequestBody TagModel tag){
