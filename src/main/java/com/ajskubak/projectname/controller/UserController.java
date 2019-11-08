@@ -114,7 +114,7 @@ public class UserController {
     //add tag to skill
     @PostMapping(value = "/skill/{skill_id}")
     public ResponseEntity<?> addTagToSkill(@PathVariable("skill_id") long skill_id, @RequestBody TagModel tag){
-        return userService.addTagToSkill(tag, skill_id);
+        return userService.addTagToSkill(skill_id, tag);
     }
     //remove tag from skill
     @DeleteMapping(value = "/skill/{skill_id}/tags/{tag_id}")

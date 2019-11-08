@@ -7,13 +7,22 @@
         </label>
         <button type="submit" class="update">Update Skill</button>
     </form>
-    <h3>Skill Tags <button class="add">+</button></h3>
-    <table *ngIf="allTags">
+    <h3>Skill Tags <button class="add" (click)="showAddTag()">+</button></h3>
+    <table>
         <th colspan="3">Id : Description</th>
         <tr *ngFor="let tag of allTags">
             <td><a routerLink="./tag/{{tag.id}}">{{tag.id}}</a></td>
-            <td><a routerLink="./tag/{{tag.id}}">{{tag.tagDescription}}</a></td>
-            <td><button class="delete">-</button></td>
+            <td><a routerLink="./tag/{{tag.id}}">{{tag.description}}</a></td>
+            <td><button class="delete" (click)="deleteTag(tag)">-</button></td>
+        </tr>
+        <tr *ngIf="showAddSkill">
+          <td colspan="3">
+            <form [formGroup]="addTagForm" (ngSubmit)="addTag()">
+              <input type="hidden" formControlName="id">
+              <input type="text" formControlName="description" placeholder="tag description">
+              <button type="submit">Add</button>
+            </form>
+          </td>
         </tr>
     </table>
     <button (click)="goBack()" class="back">Go Back</button>

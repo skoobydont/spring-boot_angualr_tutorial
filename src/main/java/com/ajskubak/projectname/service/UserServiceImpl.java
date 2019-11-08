@@ -281,11 +281,11 @@ public class UserServiceImpl implements UserService {
         ArrayList<TagModel> allTags = new ArrayList<TagModel>();
         tagRepo.findAll().forEach(allTags::add);
         //no tags, 404
-        if(allTags.size()<1){
+        if(allTags.size()==0){
             return new ResponseEntity<String>("No Tags Found",HttpStatus.NOT_FOUND);
         }
         //if tags, 200 and list of all tags
-        return new ResponseEntity<List<TagModel>>(allTags,HttpStatus.OK);
+        return new ResponseEntity<List<TagModel>>(tagRepo.findAll(),HttpStatus.OK);
     }
     //get all tags for specific skill
     public ResponseEntity<?> getAllTagsOfSkill(long skill_id){
@@ -295,6 +295,7 @@ public class UserServiceImpl implements UserService {
         if(!skill.isPresent()){
             return new ResponseEntity<String>("Skill with id: "+skill_id+" not found",HttpStatus.BAD_REQUEST);
         }
+
         //skill with no tags, 404
         if(skill.get().getTags().isEmpty()){
             return new ResponseEntity<String>("Skill "+skill.get().getId()+" has no tags", HttpStatus.NOT_FOUND);
@@ -303,23 +304,33 @@ public class UserServiceImpl implements UserService {
         return new ResponseEntity<Set<TagModel>>(skill.get().getTags(),HttpStatus.OK);
     }
     //add tag to skill
-    public ResponseEntity<?> addTagToSkill(TagModel tag, long skill_id){
+    public ResponseEntity<?> addTagToSkill(long skill_id, TagModel tag){
         //check if skill exists
         Optional<Skill> skill = skillRepo.findById(skill_id);
+        //create list of tags to check if duplicate
+        ArrayList<TagModel> allTags = new ArrayList<TagModel>();
+        //loop through tags of skill and add to alltags
+        skill.get().getTags().forEach(allTags::add);
         if(!skill.isPresent()){
             //no skill, bad request
             return new ResponseEntity<String>("Skill with id:"+skill_id+" not found", HttpStatus.BAD_REQUEST);
         }
-        //ensure tag is not duplicate in skill already
-        for(TagModel t: skill.get().getTags()){
-            if(t.getTagDescription().equals(tag.getTagDescription())){
-                //if duplicate, conflict
-                return new ResponseEntity<String>("Tag "+tag.getId()+", "+tag.getTagDescription()+" already exists with user id:"+skill_id,HttpStatus.CONFLICT);
-            }
+        if(allTags.size()>1){
+          //ensure tag is not duplicate in skill already
+          for(TagModel t: allTags){
+              if(t.getTagDescription().equals(tag.getTagDescription())){
+                  //if duplicate, conflict
+                  return new ResponseEntity<String>("Tag "+tag.getId()+", "+tag.getTagDescription()+" already exists with user id:"+skill_id,HttpStatus.CONFLICT);
+              }
+          }
         }
         //add tag to skill's tag list
         Skill save = skill.get();
+        //add tag to all tags
+        allTags.add(tag);
+        //set save obj tags to all
         save.getTags().add(tag);
+        System.out.println("\n\n\n\n\n\n\n\n tag:"+tag.getId() + ", "+tag.getTagDescription());
         //save skill & return 200
         skillRepo.save(save);
         return new ResponseEntity<TagModel>(tag,HttpStatus.CREATED);

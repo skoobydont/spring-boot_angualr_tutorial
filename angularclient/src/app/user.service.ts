@@ -72,5 +72,18 @@ export class UserService {
     this.messageService.add('fetch tag:'+tag_id);
     return this.http.get<Tag>(this.skillUrl+'/'+skill_id+'/tag/'+tag_id);
   }
-
+  // add new tag to skill
+  addTag(skill_id: number, newTag: Tag) {
+    // add message
+    this.messageService.add('add new tag:' + newTag.description + ' to skill:' + skill_id);
+    // call api and return result
+    return this.http.post<Tag>(this.skillUrl + '/' + skill_id, newTag);
+  }
+  // delete tag from skill
+  deleteTagFromSkill(skill_id: number, tag: Tag) {
+    // add message
+    this.messageService.add('Delete tag id: ' + tag.id);
+    // call api and return result
+    return this.http.delete(this.skillUrl + '/' + skill_id + '/tags/' + tag.id);
+  }
 }
