@@ -75,7 +75,7 @@ export class UserService {
   // add new tag to skill
   addTag(skill_id: number, newTag: Tag) {
     // add message
-    this.messageService.add('add new tag:' + newTag.description + ' to skill:' + skill_id);
+    this.messageService.add('add new tag:' + newTag.tagDescription + ' to skill:' + skill_id);
     // call api and return result
     return this.http.post<Tag>(this.skillUrl + '/' + skill_id, newTag);
   }

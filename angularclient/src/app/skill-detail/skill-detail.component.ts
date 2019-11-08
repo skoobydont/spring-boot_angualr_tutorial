@@ -30,12 +30,13 @@ export class SkillDetailComponent implements OnInit {
    }
   // name and attributes of update skill form
   updateSkillForm = new FormGroup({
-    desc: new FormControl('')
+    id: new FormControl(''),
+    description: new FormControl('')
   });
   // name + attributes of new tag form
   addTagForm = new FormGroup({
     id: new FormControl(''),
-    description: new FormControl('')
+    tagDescription: new FormControl('')
   });
   // get skill and tags on init
   ngOnInit() {
@@ -89,27 +90,22 @@ export class SkillDetailComponent implements OnInit {
     // use form values to populate placeholder obj
     let newTag: Tag = {
       id: this.addTagForm.controls.id.value,
-      description: this.addTagForm.controls.description.value
+      tagDescription: this.addTagForm.controls.tagDescription.value
     }; // build post request
-    this.messagingService.add('i am addtag newTag id:' + newTag.id);
-    this.messagingService.add('i am addtag newTag desc:' + newTag.description);
     // grap skill id from url
     const skill_id = +this.route.snapshot.paramMap.get('skill_id');
-    this.messagingService.add('i am addtag skillid:' + skill_id);
     // grab user id from url
     const user_id = +this.route.snapshot.paramMap.get('user_id');
-    this.messagingService.add('i am addtag userid:' + user_id);
     // post new tag to user service and subscribe to result
     this.userService.addTag(skill_id, newTag).subscribe();
     // navigate user to skill detail component w/ updated list of tags
     this.router.navigate(['/detail/' + user_id + '/skill/' + skill_id]);
-    this.messagingService.add('/detail/' + user_id + '/skill/' + skill_id);
     // render new list of tags
     this.userService.getSkillTags(skill_id).subscribe(tag => this.allTags = tag);
     // toggle view of add tag form
     this.showAddSkill = false;
     // reset value of add tag form to blank
-    this.addTagForm.controls.description.setValue('');
+    this.addTagForm.controls.tagDescription.setValue('');
   }
   // delete tag from skill
   deleteTag(tag: Tag) { // first grab user id from url
@@ -117,7 +113,7 @@ export class SkillDetailComponent implements OnInit {
     // grab skill id from url
     const skill_id = +this.route.snapshot.paramMap.get('skill_id');
     // confirm tag delete
-    confirm('Confirm Delete tag: ' + tag.description + '?');
+    confirm('Confirm Delete tag: ' + tag.tagDescription + '?');
     // call user service to delete specific tag from specific skill
     this.userService.deleteTagFromSkill(skill_id, tag).subscribe();
     // navigate user to skill detail component

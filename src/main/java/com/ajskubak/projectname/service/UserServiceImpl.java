@@ -305,6 +305,10 @@ public class UserServiceImpl implements UserService {
     }
     //add tag to skill
     public ResponseEntity<?> addTagToSkill(long skill_id, TagModel tag){
+        //check if input tag is valid
+        if(tag.getId()<0 || tag.getTagDescription().equals("")){
+            return new ResponseEntity<>("Tag id or description empty: id "+tag.getId()+", desc "+tag.getTagDescription(),HttpStatus.CONFLICT);
+        }
         //check if skill exists
         Optional<Skill> skill = skillRepo.findById(skill_id);
         //create list of tags to check if duplicate
@@ -315,14 +319,17 @@ public class UserServiceImpl implements UserService {
             //no skill, bad request
             return new ResponseEntity<String>("Skill with id:"+skill_id+" not found", HttpStatus.BAD_REQUEST);
         }
-        if(allTags.size()>1){
-          //ensure tag is not duplicate in skill already
-          for(TagModel t: allTags){
-              if(t.getTagDescription().equals(tag.getTagDescription())){
-                  //if duplicate, conflict
-                  return new ResponseEntity<String>("Tag "+tag.getId()+", "+tag.getTagDescription()+" already exists with user id:"+skill_id,HttpStatus.CONFLICT);
-              }
-          }
+        if(allTags.size()>0){
+            //ensure tag is not duplicate in skill already
+            for(TagModel t: allTags){
+                if(t.getTagDescription() == null || tag.getTagDescription() == null){
+                    return new ResponseEntity<String>("Tag description empty",HttpStatus.CONFLICT);
+                }
+                if(tag.getTagDescription().equals(t.getTagDescription())){
+                    //if duplicate, conflict
+                    return new ResponseEntity<String>("Tag "+tag.getId()+", "+tag.getTagDescription()+" already exists with user id:"+skill_id,HttpStatus.CONFLICT);
+                }
+            }
         }
         //add tag to skill's tag list
         Skill save = skill.get();
@@ -330,7 +337,6 @@ public class UserServiceImpl implements UserService {
         allTags.add(tag);
         //set save obj tags to all
         save.getTags().add(tag);
-        System.out.println("\n\n\n\n\n\n\n\n tag:"+tag.getId() + ", "+tag.getTagDescription());
         //save skill & return 200
         skillRepo.save(save);
         return new ResponseEntity<TagModel>(tag,HttpStatus.CREATED);
