@@ -1,0 +1,19 @@
+<div>
+    {{ title }}
+    <table>
+        <th>Id : Message</th>
+        <tr>
+            <td>{{ greeting.id }}</td>
+            <td>{{ greeting.content }}</td>
+        </tr>
+    </table>
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <label>Username:
+            <input type="text" formControlName="username" placeholder="username">
+        </label>
+        <label>Password:
+            <input type="password" formControlName="password" placeholder="password">
+        </label>
+        <button type="submit">Login</button>
+    </form>
+</div>

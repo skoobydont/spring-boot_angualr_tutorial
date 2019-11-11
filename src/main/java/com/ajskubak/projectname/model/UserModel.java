@@ -33,6 +33,12 @@ public class UserModel {
         this.username = username;
         this.dept = dept;
     }
+    public UserModel(String username, String dept, String password){
+        this.id = 1;
+        this.username = username;
+        this.dept = dept;
+        this.password = password;
+    }
     public UserModel(long id, String username, String dept){
         this.id = id;
         this.username = username;

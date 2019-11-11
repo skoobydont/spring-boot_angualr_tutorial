@@ -7,9 +7,10 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
 import { SkillDetailComponent } from './skill-detail/skill-detail.component';
 import { TagDetailComponent } from './tag-detail/tag-detail.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/users', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'users', component: UsersComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'detail/:id', component: UserDetailComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'delete/:id', component: DeleteUserComponent },
   { path: 'detail/:user_id/skill/:skill_id', component: SkillDetailComponent },
   { path: 'detail/:user_id/skill/:skill_id/tag/:tag_id', component: TagDetailComponent },
+  { path: 'login', component: LoginComponent }
 ];
 
 @NgModule({

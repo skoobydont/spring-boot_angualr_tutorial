@@ -20,9 +20,9 @@ public class ProjectnameApplication {
 	@Bean
 	CommandLineRunner init(UserServiceImpl userService, UserRepository userRepo){
 		return args -> {
-			UserModel user2 = new UserModel("Abbie","GD");
+			UserModel user2 = new UserModel("Abbie","GD","password");
 			userService.addUser(user2);
-			UserModel user3 = new UserModel("Jack","OR");
+			UserModel user3 = new UserModel("Jack","OR","passitword");
 			userService.addUser(user3);
 			userRepo.findAll().forEach(System.out::println);
 			Skill skill1 = new Skill("sk1ll");

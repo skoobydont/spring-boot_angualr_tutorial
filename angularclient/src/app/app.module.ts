@@ -14,6 +14,7 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
 import { SkillDetailComponent } from './skill-detail/skill-detail.component';
 import { TagDetailComponent } from './tag-detail/tag-detail.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { TagDetailComponent } from './tag-detail/tag-detail.component';
     DeleteUserComponent,
     SkillDetailComponent,
     TagDetailComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
