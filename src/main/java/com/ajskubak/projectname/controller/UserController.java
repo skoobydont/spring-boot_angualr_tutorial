@@ -1,5 +1,7 @@
 package com.ajskubak.projectname.controller;
 
+import java.security.Principal;
+
 import com.ajskubak.projectname.model.Skill;
 import com.ajskubak.projectname.model.TagModel;
 import com.ajskubak.projectname.model.UserModel;
@@ -30,7 +32,7 @@ public class UserController {
         return userService.getUser(id);
     }
     //get all users
-    @GetMapping(path = {"/user"})
+    @GetMapping(path = {"/users"})
     public ResponseEntity<?> getAllUsers() throws Exception {
         return userService.getAllUsers();
     }
@@ -138,5 +140,15 @@ public class UserController {
     }
     /* ===============================
     END TAG ENDPOINTS
+    =============================== */
+    /* ===============================
+    BEGIN AUTHENTICATION ENDPOINTS
+    =============================== */
+    @GetMapping(value = "/user")
+    public Principal user(Principal user) {
+        return user;
+    }
+    /* ===============================
+    END AUTHENTICATION ENDPOINTS
     =============================== */
 }

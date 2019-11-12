@@ -4,7 +4,7 @@ import { User } from './user';
 import { Skill } from './skill';
 import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Tag } from './tag';
 
 @Injectable({
@@ -16,10 +16,29 @@ export class UserService {
   private skillUrl = 'http://localhost:8080/skill';
   private tagUrl = 'http://localhost:8080/tag';
   newUser: User;
+  // variable to hold if user is authenticated
+  authenticated = false;
+  //method to authenticate user
+  authenticate(credentials, callback){
+    //get headers
+    const headers = new HttpHeaders(credentials ? {
+      authorization : 'Basic ' + btoa(credentials.username + ':' + credentials.password)
+    } : {});
+    this.messageService.add('authenticate');
+    this.http.get('user', {headers: headers}).subscribe(response => {
+      if(response['name']){
+        this.authenticated = true;
+      } else {
+        this.authenticated = false;
+      }
+      return callback && callback();
+    })
+  }
+
   // BEGIN USER METHODS
   getUsers(): Observable<User[]>{
     this.messageService.add('UserService: fetched all users');
-    return this.http.get<User[]>(this.userUrl);
+    return this.http.get<User[]>(this.userUrl+'s');
   }
   getUser(id: number): Observable<User> {
     //todo send message _after_ fetching user

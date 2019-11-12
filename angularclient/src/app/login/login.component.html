@@ -1,18 +1,22 @@
+<div class="alert alert-danger" [hidden]="!error">
+    There was a problem loggin in. Please try again
+</div>
 <div>
     {{ title }}
-    <table>
+    <table *ngIf="greeting">
         <th>Id : Message</th>
         <tr>
             <td>{{ greeting.id }}</td>
             <td>{{ greeting.content }}</td>
+            <td>Data</td>
         </tr>
     </table>
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <form role="form" (ngSubmit)="login()">
         <label>Username:
-            <input type="text" formControlName="username" placeholder="username">
+            <input type="text" id="username" placeholder="username" [(ngModel)]="credientials.username">
         </label>
         <label>Password:
-            <input type="password" formControlName="password" placeholder="password">
+            <input type="password" id="password" placeholder="password" [(ngModel)]="credientials.password">
         </label>
         <button type="submit">Login</button>
     </form>

@@ -2,6 +2,7 @@ package com.ajskubak.projectname.config;
 
 import javax.servlet.Filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,40 +20,40 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("aj").password("{noop}password").roles("USER").and().withUser("abbie")
-                .password("{noop}passitword").roles("ADMIN");
-    }
+    // @Override
+    // protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    //     auth.inMemoryAuthentication().withUser("aj").password("{noop}password").roles("USER").and().withUser("abbie")
+    //             .password("{noop}passitword").roles("ADMIN");
+    // }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-            .authorizeRequests()
-            .anyRequest()
-            .permitAll()
-            .and()
-            .addFilterBefore(customFilter(), BasicAuthenticationFilter.class)
-            .httpBasic();
-        http.csrf().disable();
-    }
-    @Bean
-    public CustomFilter customFilter() {
-        return new CustomFilter();
-    }
+    // @Override
+    // protected void configure(HttpSecurity http) throws Exception {
+    //     http
+    //         .authorizeRequests()
+    //         .anyRequest()
+    //         .permitAll()
+    //         .and()
+    //         .addFilterBefore(customFilter(), BasicAuthenticationFilter.class)
+    //         .httpBasic();
+    //     http.csrf().disable();
+    // }
+    // @Autowired
+    // public CustomFilter customFilter() {
+    //     return new CustomFilter();
+    // }
 
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        System.out.println(encoder.encode("password"));
-        UserDetails user = 
-            User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build();
+    // @Bean
+    // @Override
+    // public UserDetailsService userDetailsService() {
+    //     PasswordEncoder encoder = new BCryptPasswordEncoder();
+    //     System.out.println(encoder.encode("password"));
+    //     UserDetails user = 
+    //         User.withDefaultPasswordEncoder()
+    //             .username("user")
+    //             .password("password")
+    //             .roles("USER")
+    //             .build();
 
-        return new InMemoryUserDetailsManager(user);
-    }
+    //     return new InMemoryUserDetailsManager(user);
+    // }
 }
