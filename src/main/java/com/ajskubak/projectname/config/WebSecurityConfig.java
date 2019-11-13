@@ -20,23 +20,25 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    // @Override
-    // protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    //     auth.inMemoryAuthentication().withUser("aj").password("{noop}password").roles("USER").and().withUser("abbie")
-    //             .password("{noop}passitword").roles("ADMIN");
-    // }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+            .withUser("aj").password("{noop}password").roles("USER")
+            .and()
+            .withUser("abbie").password("{noop}passitword").roles("ADMIN");
+    }
 
-    // @Override
-    // protected void configure(HttpSecurity http) throws Exception {
-    //     http
-    //         .authorizeRequests()
-    //         .anyRequest()
-    //         .permitAll()
-    //         .and()
-    //         .addFilterBefore(customFilter(), BasicAuthenticationFilter.class)
-    //         .httpBasic();
-    //     http.csrf().disable();
-    // }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+            .anyRequest()
+            .permitAll()
+            .and()
+            .addFilterBefore(customFilter(), BasicAuthenticationFilter.class)
+            .httpBasic();
+        http.csrf().disable();
+    }
     // @Autowired
     // public CustomFilter customFilter() {
     //     return new CustomFilter();
