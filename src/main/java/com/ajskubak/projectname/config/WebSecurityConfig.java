@@ -5,6 +5,7 @@ import javax.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,14 +31,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-            .authorizeRequests()
-            .anyRequest()
-            .permitAll()
+        http// http basic auth
+            .httpBasic()
             .and()
-            .addFilterBefore(customFilter(), BasicAuthenticationFilter.class)
-            .httpBasic();
-        http.csrf().disable();
+            .authorizeRequests()// user methods
+            .antMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
+            .antMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/user").hasRole("ADMIN")
+            //skill methods
+            .antMatchers(HttpMethod.GET, "/skills").hasRole("USER");
+
     }
     // @Autowired
     // public CustomFilter customFilter() {

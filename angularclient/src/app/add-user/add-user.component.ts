@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { UserService } from '../user.service';
+import { UserService } from '../service/user.service';
 import { User } from '../user';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MessageService } from '../message.service';
+import { MessageService } from '../service/message.service';
 import { Router } from '@angular/router';
 
 @Component({

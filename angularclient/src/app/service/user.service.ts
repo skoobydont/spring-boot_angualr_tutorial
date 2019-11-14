@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { User } from './user';
-import { Skill } from './skill';
+import { User } from '../user';
+import { Skill } from '../skill';
 import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Tag } from './tag';
+import { Tag } from '../tag';
 
 @Injectable({
   providedIn: 'root'
@@ -18,22 +18,6 @@ export class UserService {
   newUser: User;
   // variable to hold if user is authenticated
   authenticated = false;
-  //method to authenticate user
-  authenticate(credentials, callback){
-    //get headers
-    const headers = new HttpHeaders(credentials ? {
-      authorization : 'Basic ' + btoa(credentials.username + ':' + credentials.password)
-    } : {});
-    this.messageService.add('authenticate');
-    this.http.get('user', {headers: headers}).subscribe(response => {
-      if(response['name']){
-        this.authenticated = true;
-      } else {
-        this.authenticated = false;
-      }
-      return callback && callback();
-    })
-  }
 
   // BEGIN USER METHODS
   getUsers(): Observable<User[]>{

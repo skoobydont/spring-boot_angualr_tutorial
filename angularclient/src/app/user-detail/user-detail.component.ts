@@ -2,10 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { User } from '../user';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { UserService } from '../user.service';
+import { UserService } from '../service/user.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MessageService } from '../message.service';
+import { MessageService } from '../service/message.service';
 import { Skill } from '../skill';
 
 @Component({

@@ -2,8 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { User } from '../user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { UserService } from '../user.service';
-import { MessageService } from '../message.service';
+import { UserService } from '../service/user.service';
+import { MessageService } from '../service/message.service';
 
 @Component({
   selector: 'app-delete-user',

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { UserService } from './user.service';
+import { UserService } from './service/user.service';
 import { finalize } from 'rxjs/operators';
-import { MessageService } from './message.service';
+import { MessageService } from './service/message.service';
 
 @Component({
   selector: 'app-root',

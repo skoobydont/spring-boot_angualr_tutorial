@@ -8,13 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { MessagesComponent } from './messages/messages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AddUserComponent } from './add-user/add-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
 import { SkillDetailComponent } from './skill-detail/skill-detail.component';
 import { TagDetailComponent } from './tag-detail/tag-detail.component';
 import { LoginComponent } from './login/login.component';
+import { BasicAuthHttpInterceptorService } from './service/basic-auth-http-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,9 @@ import { LoginComponent } from './login/login.component';
     HttpClientModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS, useClass:BasicAuthHttpInterceptorService, multi:true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
