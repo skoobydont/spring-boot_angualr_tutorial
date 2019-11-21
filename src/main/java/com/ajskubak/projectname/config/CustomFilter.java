@@ -26,7 +26,8 @@ public class CustomFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Principal userPrincipal = request.getUserPrincipal();
 
-        System.out.println("user principal: " +userPrincipal);
+        System.out.println("user principal: " + userPrincipal);
+        System.out.println("user:"+request.toString());
     }
     @Override
     public void destroy() {

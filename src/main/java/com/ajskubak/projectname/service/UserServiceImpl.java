@@ -15,6 +15,7 @@ import com.ajskubak.projectname.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +27,9 @@ public class UserServiceImpl implements UserService {
     private SkillRepository skillRepo;
     @Autowired
     private TagRepository tagRepo;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPwdEcoder;
 
     /*
      * =============================== 
@@ -52,7 +56,8 @@ public class UserServiceImpl implements UserService {
             else if (u.getId() == user.getId() || user.getId() == auto_id) {
                 user.setId(u.getId() + 1);
             }
-        }
+        }//encode password
+        user.setPassword(bCryptPwdEcoder.encode(user.getPassword()));
         userRepo.save(user);
         return new ResponseEntity<UserModel>(user, HttpStatus.CREATED);
     }
@@ -127,6 +132,21 @@ public class UserServiceImpl implements UserService {
         //save user into repo
         userRepo.save(user);
         return new ResponseEntity<UserModel>(user, HttpStatus.OK);
+    }
+    @Override
+    public UserModel findByUsername(String username) {
+        // TODO Auto-generated method stub
+        return userRepo.findByUsername(username);
+    }
+
+    @Override
+    public ResponseEntity<?> findAllUsers() {
+        ArrayList<UserModel> allUsers = new ArrayList<UserModel>();
+        userRepo.findAll().forEach(allUsers::add);
+        if(allUsers.size()<0) {
+            return new ResponseEntity<String>("No Users",HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<List<UserModel>>(allUsers,HttpStatus.OK);
     }
 
     /*
@@ -421,4 +441,5 @@ public class UserServiceImpl implements UserService {
     * END TAG SERVICE METHODS
     * =============================== 
     */
+
 }

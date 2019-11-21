@@ -9,6 +9,7 @@ import com.ajskubak.projectname.service.UserServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPwdEncoder;
     /* ===============================
     BEGIN USER ENDPOINTS
     =============================== */
@@ -34,7 +37,7 @@ public class UserController {
     //get all users
     @GetMapping(path = {"/users"})
     public ResponseEntity<?> getAllUsers() throws Exception {
-        return userService.getAllUsers();
+        return userService.findAllUsers();
     }
     //delete user based on id
     @DeleteMapping(value = "/user/{id}")
@@ -47,7 +50,7 @@ public class UserController {
         return userService.deleteAllUsers();
     }
     //add new user
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/user/sign-up")
     public ResponseEntity<?> addUser(@RequestBody UserModel user) throws Exception {
         return userService.addUser(user);
     }
@@ -144,10 +147,10 @@ public class UserController {
     /* ===============================
     BEGIN AUTHENTICATION ENDPOINTS
     =============================== */
-    @GetMapping(value = "/user")
-    public Principal user(Principal user) {
-        return user;
-    }
+    // @GetMapping(value = "/user")
+    // public Principal user(Principal user) {
+    //     return user;
+    // }
     /* ===============================
     END AUTHENTICATION ENDPOINTS
     =============================== */

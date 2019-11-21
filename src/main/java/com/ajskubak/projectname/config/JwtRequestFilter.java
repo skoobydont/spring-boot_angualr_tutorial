@@ -34,6 +34,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwtToken = null;
         //JWT token is in form "bearer token"; remove bearer word and get just token
+        logger.warn("jwtToken" + jwtToken);
+        
+        
         if(requestTokenHeader != null && requestTokenHeader.startsWith("Bearer")) {
             jwtToken = requestTokenHeader.substring(7);
             try {

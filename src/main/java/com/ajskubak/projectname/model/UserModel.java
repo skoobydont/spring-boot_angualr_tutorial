@@ -1,6 +1,7 @@
 package com.ajskubak.projectname.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -26,6 +27,13 @@ public class UserModel {
     joinColumns = @JoinColumn(name="skill_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"))
     private Set<Skill> skills = new HashSet<Skill>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role",
+        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private List<Role> roles;
+
     //constructors
     public UserModel(){}
     public UserModel(String username, String dept) {
@@ -74,6 +82,12 @@ public class UserModel {
     }
     public void setSkills(Set<Skill> skills){
         this.skills = skills;
+    }
+    public List<Role> getRoles(){
+        return roles;
+    }
+    public void setRoles(List<Role> roles){
+        this.roles = roles;
     }
     @Override
     public String toString() {
