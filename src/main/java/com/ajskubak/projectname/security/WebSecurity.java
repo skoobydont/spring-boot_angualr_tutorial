@@ -18,6 +18,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
+    
+    // tutorial to follow
+    // https://www.javainuse.com/spring/ang7-jwt
+    // need to delegate scopes to users so they can only interact with correct data
+    
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
