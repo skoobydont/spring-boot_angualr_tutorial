@@ -30,25 +30,25 @@ public class ProjectnameApplication {
 		SpringApplication.run(ProjectnameApplication.class, args);
 	}
 	//add some dummy data
-	// @Bean
-	// CommandLineRunner init(UserServiceImpl userService, UserRepository userRepo){
-	// 	return args -> {
-	// 		UserModel user2 = new UserModel("Abbie","GD","password");
-	// 		userService.addUser(user2);
-	// 		UserModel user3 = new UserModel("Jack","OR","passitword");
-	// 		userService.addUser(user3);
-	// 		userRepo.findAll().forEach(System.out::println);
-	// 		Skill skill1 = new Skill("sk1ll");
-	// 		Skill skill2 = new Skill("sk2ll");
-	// 		TagModel tag1 = new TagModel("Design");
-	// 		skill1.getTags().add(tag1);
-	// 		user2.getSkills().add(skill1);
-	// 		user2.getSkills().add(skill2);
-	// 		user3.getSkills().add(skill2);
-	// 		userRepo.save(user2);
-	// 		userRepo.save(user3);
-	// 	};
-	// }
+	@Bean
+	CommandLineRunner init(UserServiceImpl userService, UserRepository userRepo){
+		return args -> {
+			UserModel user2 = new UserModel("Abbie","GD","password");
+			userService.addUser(user2);
+			UserModel user3 = new UserModel("Jack","OR","passitword");
+			userService.addUser(user3);
+			userRepo.findAll().forEach(System.out::println);
+			Skill skill1 = new Skill("sk1ll");
+			Skill skill2 = new Skill("sk2ll");
+			TagModel tag1 = new TagModel("Design");
+			skill1.getTags().add(tag1);
+			user2.getSkills().add(skill1);
+			user2.getSkills().add(skill2);
+			user3.getSkills().add(skill2);
+			userRepo.save(user2);
+			userRepo.save(user3);
+		};
+	}
 	//security configuration
 	// @Configuration
 	// @Order(SecurityProperties.BASIC_AUTH_ORDER)

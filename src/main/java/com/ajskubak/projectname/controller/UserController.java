@@ -5,6 +5,7 @@ import java.security.Principal;
 import com.ajskubak.projectname.model.Skill;
 import com.ajskubak.projectname.model.TagModel;
 import com.ajskubak.projectname.model.UserModel;
+import com.ajskubak.projectname.repository.UserRepository;
 import com.ajskubak.projectname.service.UserServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,10 @@ public class UserController {
     private UserServiceImpl userService;
     @Autowired
     private BCryptPasswordEncoder bCryptPwdEncoder;
+    //constructor
+    @Autowired
+    private UserRepository userRepo;
+
     /* ===============================
     BEGIN USER ENDPOINTS
     =============================== */
@@ -50,10 +55,23 @@ public class UserController {
         return userService.deleteAllUsers();
     }
     //add new user
-    @PostMapping(value = "/user/sign-up")
+    @PostMapping(value = "/user")
     public ResponseEntity<?> addUser(@RequestBody UserModel user) throws Exception {
         return userService.addUser(user);
     }
+    /* ===============================
+    BEGIN AUTHENTICATION ENDPOINTS
+    =============================== */
+    //sign up user
+    @PostMapping(value = "/sign-up")
+    public void signUp(@RequestBody UserModel user){
+        user.setPassword(bCryptPwdEncoder.encode(user.getPassword()));
+        userRepo.save(user);
+    }
+    /* ===============================
+    END AUTHENTICATION ENDPOINTS
+    =============================== */
+
     //update user
     @PatchMapping(value = "/user")
     public ResponseEntity<?> updateUser(@RequestBody UserModel update) throws Exception {
@@ -144,14 +162,5 @@ public class UserController {
     /* ===============================
     END TAG ENDPOINTS
     =============================== */
-    /* ===============================
-    BEGIN AUTHENTICATION ENDPOINTS
-    =============================== */
-    // @GetMapping(value = "/user")
-    // public Principal user(Principal user) {
-    //     return user;
-    // }
-    /* ===============================
-    END AUTHENTICATION ENDPOINTS
-    =============================== */
+
 }
