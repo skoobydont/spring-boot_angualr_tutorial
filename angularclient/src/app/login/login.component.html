@@ -11,12 +11,12 @@
             <td>Data</td>
         </tr>
     </table>
-    <form role="form" (ngSubmit)="login()">
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
         <label>Username:
-            <input type="text" id="username" placeholder="username" [(ngModel)]="credientials.username">
+            <input type="text" placeholder="username" formControlName="username">
         </label>
         <label>Password:
-            <input type="password" id="password" placeholder="password" [(ngModel)]="credientials.password">
+            <input type="password" placeholder="password" formControlName="password">
         </label>
         <button type="submit">Login</button>
     </form>

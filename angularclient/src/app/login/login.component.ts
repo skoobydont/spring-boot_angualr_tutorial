@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../service/authentication.service';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -15,17 +17,24 @@ export class LoginComponent implements OnInit {
     content:'Heyo Worldie'
   };
 
-  credentials = {username:'',password:''};
+  loginForm = new FormGroup({
+    username: new FormControl(''),
+    password: new FormControl('')
+  });
 
-  constructor(private userService: UserService, private http: HttpClient, private router: Router) { }
+  constructor(
+    private userService: UserService,
+    private http: HttpClient,
+    private router: Router,
+    private authService: AuthenticationService
+    ) { }
 
   ngOnInit() {
   }
 
   login() {
-    this.userService.authenticate(this.credentials, () => {
-      this.router.navigateByUrl('/');
-    });
+    this.authService.authenticate(this.loginForm.controls.username.value,this.loginForm.controls.password.value).subscribe();
+    this.router.navigateByUrl('/');
     return false;
   }
 }

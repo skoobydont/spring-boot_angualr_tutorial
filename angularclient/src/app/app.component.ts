@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserService } from './service/user.service';
 import { finalize } from 'rxjs/operators';
 import { MessageService } from './service/message.service';
+import { AuthenticationService } from './service/authentication.service';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +18,11 @@ export class AppComponent {
     private service: UserService,
     private http: HttpClient, 
     private router: Router,
-    private messageService: MessageService    
+    private messageService: MessageService,
+    private authService: AuthenticationService    
     ) {
     this.title = 'angularclient';
-    this.service.authenticate(undefined, undefined);
+    this.authService.authenticate(undefined, undefined);
   }
   //method to log user out
   logout() {
